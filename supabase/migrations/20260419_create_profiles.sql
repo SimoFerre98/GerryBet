@@ -13,6 +13,14 @@ alter table profiles enable row level security;
 create policy "Users can view own profile" on profiles
   for select using (auth.uid() = id);
 
+-- Policy: Gli admin possono vedere tutti i profili
+create policy "Admins can view all profiles" on profiles
+  for select using (
+    exists (
+      select 1 from profiles where id = auth.uid() and role = 'admin'
+    )
+  );
+
 -- Policy: Solo gli admin possono modificare i GP
 create policy "Admins can update profiles" on profiles
   for update using (
@@ -22,9 +30,10 @@ create policy "Admins can update profiles" on profiles
   );
 
 -- Funzione per gestire i nuovi utenti
-create function public.handle_new_user()
+create or replace function public.handle_new_user()
 returns trigger as $$
 begin
+  SET search_path = public;
   insert into public.profiles (id, username, gerry_points, role)
   values (new.id, new.raw_user_meta_data->>'username', 100, 'user');
   return new;
