@@ -12,8 +12,8 @@ export default function LoginPage() {
   const router = useRouter()
   const supabase = createClient()
 
-  const handleSignUp = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleSignUp = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault()
     setLoading(true)
     setMessage('')
     const { error } = await supabase.auth.signUp({
@@ -31,8 +31,8 @@ export default function LoginPage() {
     setLoading(false)
   }
 
-  const handleSignIn = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleSignIn = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault()
     setLoading(true)
     setMessage('')
     const { error } = await supabase.auth.signInWithPassword({
@@ -53,10 +53,11 @@ export default function LoginPage() {
       <div className="p-8 bg-white shadow-md rounded-lg w-96 border border-gray-200">
         <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">GerryBet</h1>
         <h2 className="text-xl font-semibold mb-4 text-center text-gray-600">Login / Registrazione</h2>
-        <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
+        <form className="space-y-4" onSubmit={handleSignIn}>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Email</label>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
             <input
+              id="email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -65,8 +66,9 @@ export default function LoginPage() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Password</label>
+            <label htmlFor="password" name="password" className="block text-sm font-medium text-gray-700">Password</label>
             <input
+              id="password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -76,14 +78,15 @@ export default function LoginPage() {
           </div>
           <div className="flex flex-col space-y-2">
             <button
-              onClick={handleSignIn}
+              type="submit"
               disabled={loading}
               className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 transition duration-150 ease-in-out cursor-pointer"
             >
               {loading ? 'Caricamento...' : 'Accedi'}
             </button>
             <button
-              onClick={handleSignUp}
+              type="button"
+              onClick={() => handleSignUp()}
               disabled={loading}
               className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 transition duration-150 ease-in-out cursor-pointer"
             >
