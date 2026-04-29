@@ -106,6 +106,7 @@ export default function LoginPage() {
                 )}
               </button>
             </div>
+          </div>
           <div className="pt-2 flex flex-col space-y-3">
             <button
               type="submit"
