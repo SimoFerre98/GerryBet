@@ -3,12 +3,12 @@
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 
-export async function rechargePoints(formData: FormData) {
+export async function updateBalance(formData: FormData) {
   const supabase = await createClient()
   
   // Verify Admin
   const { data: { user }, error: userError } = await supabase.auth.getUser()
-  if (userError || !user) throw new Error('Not authenticated')
+  if (userError || !user) throw new Error('Non autenticato')
 
   const { data: profile } = await supabase
     .from('profiles')
@@ -17,37 +17,43 @@ export async function rechargePoints(formData: FormData) {
     .single()
 
   if (profile?.role !== 'admin') {
-    throw new Error('Not authorized')
+    throw new Error('Non autorizzato')
   }
 
   // Get form data
   const targetUserId = formData.get('user_id') as string
   const amountStr = formData.get('amount') as string
+  const type = formData.get('type') as 'add' | 'remove'
   const amount = parseInt(amountStr, 10)
 
   if (!targetUserId || isNaN(amount) || amount <= 0) {
-    throw new Error('Invalid input')
+    throw new Error('Importo non valido')
   }
 
-  // Recharge points
-  // First get current points
   const { data: targetProfile } = await supabase
     .from('profiles')
     .select('gerry_points')
     .eq('id', targetUserId)
     .single()
 
-  if (!targetProfile) throw new Error('User not found')
+  if (!targetProfile) throw new Error('Utente non trovato')
+
+  let newBalance = targetProfile.gerry_points
+  if (type === 'add') {
+    newBalance += amount
+  } else {
+    if (targetProfile.gerry_points < amount) {
+      throw new Error('L\'utente non ha abbastanza GerryCoin da detrarre')
+    }
+    newBalance -= amount
+  }
 
   const { error: updateError } = await supabase
     .from('profiles')
-    .update({ gerry_points: targetProfile.gerry_points + amount })
+    .update({ gerry_points: newBalance })
     .eq('id', targetUserId)
 
-  if (updateError) {
-    throw new Error('Failed to recharge points')
-  }
-
+  if (updateError) throw new Error('Errore durante l\'aggiornamento del saldo')
   revalidatePath('/admin/users')
 }
 

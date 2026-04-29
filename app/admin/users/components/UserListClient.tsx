@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { rechargePoints, updateUserRole } from '@/app/actions/admin'
+import { updateUserRole, updateBalance } from '@/app/actions/admin'
 import { ActionForm } from '@/app/admin/components/ActionForm'
 
 type User = {
@@ -64,8 +64,9 @@ export default function UserListClient({ initialUsers, currentUserId }: { initia
                     <p className="font-black text-2xl text-white">{u.gerry_points}</p>
                   </div>
 
-                  <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-                    <ActionForm actionFunc={updateUserRole} className={`flex items-center gap-2 bg-slate-900 p-2 rounded-xl border border-slate-700 w-full sm:w-auto ${isMe ? 'opacity-50 grayscale' : ''}`}>
+                  <div className="flex flex-col sm:flex-row gap-6 w-full sm:w-auto items-center">
+                    {/* Role Selection */}
+                    <ActionForm actionFunc={updateUserRole} className={`flex items-center gap-2 bg-slate-900 p-2 rounded-xl border border-slate-700 ${isMe ? 'opacity-50 grayscale' : ''}`}>
                       <input type="hidden" name="user_id" value={u.id} />
                       <select 
                         name="role" 
@@ -85,23 +86,48 @@ export default function UserListClient({ initialUsers, currentUserId }: { initia
                       </button>
                     </ActionForm>
 
-                  <ActionForm actionFunc={rechargePoints} className="flex items-center gap-2 bg-slate-900 p-2 rounded-xl border border-slate-700 w-full sm:w-auto">
-                    <input type="hidden" name="user_id" value={u.id} />
-                    <input 
-                      type="number" 
-                      name="amount" 
-                      placeholder="Es. 50" 
-                      className="w-full sm:w-24 px-3 py-2 bg-slate-800 text-white rounded-lg border border-slate-600 focus:outline-none focus:border-indigo-500 text-sm"
-                      required 
-                      min="1"
-                    />
-                    <button type="submit" className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-bold rounded-lg transition-colors whitespace-nowrap">
-                      Ricarica GC
-                    </button>
-                  </ActionForm>
+                    {/* Balance Management */}
+                    <div className="flex flex-col gap-3 bg-slate-900/50 p-3 rounded-2xl border border-white/5 w-full sm:w-auto">
+                      <p className="text-[10px] text-slate-400 uppercase tracking-widest font-bold ml-1 text-center sm:text-left">Gestione Saldo (GC)</p>
+                      <div className="flex flex-wrap items-center justify-center gap-2">
+                        <ActionForm actionFunc={updateBalance} successMessage="Saldo aggiornato!" className="flex items-center gap-2">
+                          <input type="hidden" name="user_id" value={u.id} />
+                          <input type="hidden" name="type" value="add" />
+                          <input 
+                            type="number" 
+                            name="amount" 
+                            placeholder="Aggiungi" 
+                            className="w-20 px-3 py-2 bg-slate-800 text-white rounded-lg border border-slate-600 focus:outline-none focus:border-green-500 text-sm"
+                            required 
+                            min="1"
+                          />
+                          <button type="submit" className="w-10 h-10 bg-green-600/20 text-green-400 hover:bg-green-500 hover:text-white rounded-lg transition-all flex items-center justify-center font-bold text-xl" title="Aggiungi GC">
+                            +
+                          </button>
+                        </ActionForm>
+
+                        <div className="w-px h-8 bg-white/10 mx-1 hidden sm:block"></div>
+
+                        <ActionForm actionFunc={updateBalance} successMessage="Saldo aggiornato!" className="flex items-center gap-2">
+                          <input type="hidden" name="user_id" value={u.id} />
+                          <input type="hidden" name="type" value="remove" />
+                          <input 
+                            type="number" 
+                            name="amount" 
+                            placeholder="Detrai" 
+                            className="w-20 px-3 py-2 bg-slate-800 text-white rounded-lg border border-slate-600 focus:outline-none focus:border-red-500 text-sm"
+                            required 
+                            min="1"
+                          />
+                          <button type="submit" className="w-10 h-10 bg-red-600/20 text-red-400 hover:bg-red-500 hover:text-white rounded-lg transition-all flex items-center justify-center font-bold text-xl" title="Detrai GC">
+                            -
+                          </button>
+                        </ActionForm>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </li>
+              </li>
             );
           })}
           {filteredUsers.length === 0 && (
