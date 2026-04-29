@@ -14,9 +14,20 @@ export async function placeBet(formData: FormData) {
   const oddId = formData.get('odd_id') as string
   const amountGpStr = formData.get('amount_gp') as string
   
+  // Verify match has not started
+  const { data: match } = await supabase
+    .from('matches')
+    .select('start_time, status')
+    .eq('id', matchId)
+    .single()
+
+  if (!match || match.status !== 'open' || new Date(match.start_time) <= new Date()) {
+    throw new Error('Le scommesse per questa partita sono chiuse')
+  }
+
   const amountGp = parseInt(amountGpStr, 10)
   if (isNaN(amountGp) || amountGp <= 0) {
-    throw new Error('Invalid amount')
+    throw new Error('Importo non valido')
   }
 
   // To do things safely, we should fetch profile, verify funds, insert bet, update profile using a single transaction.

@@ -58,59 +58,69 @@ export default async function MatchPage({
         </div>
         
         <div className="p-6 md:p-10">
-          <h2 className="text-2xl font-bold text-white mb-8 drop-shadow-md">Piazza la tua scommessa</h2>
-          
-          <form action={placeBet} className="space-y-8">
-            <input type="hidden" name="match_id" value={match.id} />
-            
-            <div className="space-y-4">
-              <label className="block text-sm font-semibold text-slate-300 uppercase tracking-widest">1. Scegli la quota</label>
-              {match.odds && match.odds.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  {match.odds.map((odd: any) => (
-                    <label key={odd.id} className="relative cursor-pointer group">
-                      <input type="radio" name="odd_id" value={odd.id} className="peer sr-only" required />
-                      <div className="p-5 rounded-2xl border-2 border-white/10 peer-checked:border-indigo-400 peer-checked:bg-indigo-500/20 bg-slate-800/40 hover:bg-slate-700/50 transition-all flex flex-col items-center justify-center text-center shadow-lg hover:shadow-indigo-500/20">
-                        <span className="text-indigo-200/80 font-medium text-sm mb-1 uppercase tracking-wider">{odd.description}</span>
-                        <span className="text-2xl font-black text-white peer-checked:text-indigo-300 drop-shadow-md">{odd.value}</span>
-                      </div>
-                    </label>
-                  ))}
+          {new Date(match.start_time) <= new Date() ? (
+            <div className="bg-red-500/10 border border-red-500/20 rounded-2xl p-8 text-center">
+              <span className="text-4xl mb-4 block">🕒</span>
+              <h3 className="text-xl font-bold text-red-400 mb-2">Scommesse Chiuse</h3>
+              <p className="text-slate-400">La partita è già iniziata. Non è più possibile piazzare giocate per questo evento.</p>
+            </div>
+          ) : (
+            <>
+              <h2 className="text-2xl font-bold text-white mb-8 drop-shadow-md">Piazza la tua scommessa</h2>
+              
+              <form action={placeBet} className="space-y-8">
+                <input type="hidden" name="match_id" value={match.id} />
+                
+                <div className="space-y-4">
+                  <label className="block text-sm font-semibold text-slate-300 uppercase tracking-widest">1. Scegli la quota</label>
+                  {match.odds && match.odds.length > 0 ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                      {match.odds.map((odd: any) => (
+                        <label key={odd.id} className="relative cursor-pointer group">
+                          <input type="radio" name="odd_id" value={odd.id} className="peer sr-only" required />
+                          <div className="p-5 rounded-2xl border-2 border-white/10 peer-checked:border-indigo-400 peer-checked:bg-indigo-500/20 bg-slate-800/40 hover:bg-slate-700/50 transition-all flex flex-col items-center justify-center text-center shadow-lg hover:shadow-indigo-500/20">
+                            <span className="text-indigo-200/80 font-medium text-sm mb-1 uppercase tracking-wider">{odd.description}</span>
+                            <span className="text-2xl font-black text-white peer-checked:text-indigo-300 drop-shadow-md">{odd.value}</span>
+                          </div>
+                        </label>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-indigo-200/50 italic bg-slate-900/50 p-4 rounded-xl border border-white/5">Nessuna quota disponibile per questa partita.</p>
+                  )}
                 </div>
-              ) : (
-                <p className="text-indigo-200/50 italic bg-slate-900/50 p-4 rounded-xl border border-white/5">Nessuna quota disponibile per questa partita.</p>
-              )}
-            </div>
 
-            <div className="space-y-4">
-              <label className="block text-sm font-semibold text-slate-300 uppercase tracking-widest">2. Inserisci l'importo (GP)</label>
-              <div className="flex items-center gap-4 max-w-xs relative">
-                <input 
-                  type="number" 
-                  name="amount_gp" 
-                  min="1" 
-                  max={profile?.gerry_points || 0}
-                  className="w-full pl-6 pr-16 py-4 rounded-2xl bg-slate-900/50 border border-white/10 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-2xl font-black text-white shadow-inner placeholder:text-slate-600 transition-all"
-                  placeholder="0" 
-                  required 
-                />
-                <span className="absolute right-6 font-bold text-indigo-400">GP</span>
-              </div>
-              <p className="text-sm text-slate-400">
-                Saldo disponibile: <span className="font-black text-indigo-300">{profile?.gerry_points} GP</span>
-              </p>
-            </div>
+                <div className="space-y-4">
+                  <label className="block text-sm font-semibold text-slate-300 uppercase tracking-widest">2. Inserisci l'importo (GP)</label>
+                  <div className="flex items-center gap-4 max-w-xs relative">
+                    <input 
+                      type="number" 
+                      name="amount_gp" 
+                      min="1" 
+                      max={profile?.gerry_points || 0}
+                      className="w-full pl-6 pr-16 py-4 rounded-2xl bg-slate-900/50 border border-white/10 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-2xl font-black text-white shadow-inner placeholder:text-slate-600 transition-all"
+                      placeholder="0" 
+                      required 
+                    />
+                    <span className="absolute right-6 font-bold text-indigo-400">GP</span>
+                  </div>
+                  <p className="text-sm text-slate-400">
+                    Saldo disponibile: <span className="font-black text-indigo-300">{profile?.gerry_points} GP</span>
+                  </p>
+                </div>
 
-            <div className="pt-4">
-              <button 
-                type="submit" 
-                className="w-full md:w-auto px-10 py-5 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white text-lg font-bold rounded-2xl shadow-[0_0_20px_rgba(99,102,241,0.4)] transition-all transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed border border-white/20"
-                disabled={!match.odds || match.odds.length === 0}
-              >
-                Conferma Giocata
-              </button>
-            </div>
-          </form>
+                <div className="pt-4">
+                  <button 
+                    type="submit" 
+                    className="w-full md:w-auto px-10 py-5 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white text-lg font-bold rounded-2xl shadow-[0_0_20px_rgba(99,102,241,0.4)] transition-all transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed border border-white/20"
+                    disabled={!match.odds || match.odds.length === 0}
+                  >
+                    Conferma Giocata
+                  </button>
+                </div>
+              </form>
+            </>
+          )}
         </div>
       </div>
     </div>

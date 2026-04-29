@@ -90,16 +90,14 @@ export async function createMatch(formData: FormData) {
 
   const team_a_id = formData.get('team_a_id') as string
   const team_b_id = formData.get('team_b_id') as string
+  const start_time_val = formData.get('start_time') as string
   
-  let start_time_val = formData.get('start_time') as string
-  const start_date_val = formData.get('start_date') as string
-  
-  if (start_date_val && start_time_val) {
-    start_time_val = `${start_date_val}T${start_time_val}`
+  if (!team_a_id || !team_b_id || !start_time_val) {
+    throw new Error('Tutti i campi sono obbligatori')
   }
 
-  if (!team_a_id || !team_b_id || !start_time_val || team_a_id === team_b_id) {
-    throw new Error('Invalid match data')
+  if (team_a_id === team_b_id) {
+    throw new Error('Una squadra non può giocare contro se stessa!')
   }
 
   const { data, error } = await supabase
@@ -157,14 +155,9 @@ export async function updateMatch(formData: FormData) {
   await assertAdmin(supabase)
 
   const match_id = formData.get('match_id') as string
-  let start_time_val = formData.get('start_time') as string
-  const start_date_val = formData.get('start_date') as string
+  const start_time_val = formData.get('start_time') as string
   
-  if (start_date_val && start_time_val) {
-    start_time_val = `${start_date_val}T${start_time_val}`
-  }
-
-  if (!match_id || !start_time_val) throw new Error('Missing match data')
+  if (!match_id || !start_time_val) throw new Error('Dati partita mancanti')
 
   const { error } = await supabase
     .from('matches')

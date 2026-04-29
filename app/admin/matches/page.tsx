@@ -42,15 +42,14 @@ export default async function AdminMatchesPage() {
               {teams?.map(t => <option key={t.id} value={t.id}>{t.name} (PR: {t.power_ranking})</option>)}
             </select>
           </div>
-          <div className="flex-1 w-full flex gap-2">
-            <div className="w-1/2">
-              <label className="text-xs text-slate-400 mb-1 block">Data</label>
-              <input type="date" name="start_date" className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500" required />
-            </div>
-            <div className="w-1/2">
-              <label className="text-xs text-slate-400 mb-1 block">Ora</label>
-              <input type="time" name="start_time" className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500" required />
-            </div>
+          <div className="flex-1 w-full">
+            <label className="text-xs text-slate-400 mb-1 block">Data e Ora Inizio</label>
+            <input 
+              type="datetime-local" 
+              name="start_time" 
+              className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500" 
+              required 
+            />
           </div>
           <button type="submit" className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-8 rounded-xl transition-colors w-full md:w-auto h-auto">
             Crea Partita
@@ -77,12 +76,17 @@ export default async function AdminMatchesPage() {
                   Differenza Power Ranking: {Math.abs((match.team_a.power_ranking || 0) - (match.team_b.power_ranking || 0))}
                 </div>
                 {match.status === 'open' && (
-                  <ActionForm actionFunc={updateMatch} successMessage="Data e ora aggiornate" className="flex gap-2 items-center mt-3 bg-slate-900/50 p-2 rounded-lg inline-flex">
+                  <ActionForm actionFunc={updateMatch} successMessage="Data e ora aggiornate" className="flex gap-2 items-center mt-3 bg-slate-900/50 p-2 rounded-xl inline-flex border border-white/5">
                     <input type="hidden" name="match_id" value={match.id} />
-                    <input type="date" name="start_date" defaultValue={new Date(match.start_time).toISOString().split('T')[0]} className="text-xs bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-white focus:outline-none focus:border-indigo-500" required />
-                    <input type="time" name="start_time" defaultValue={new Date(match.start_time).toISOString().split('T')[1].substring(0,5)} className="text-xs bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-white focus:outline-none focus:border-indigo-500" required />
-                    <button type="submit" className="text-xs bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-3 py-1.5 rounded transition-colors">
-                      Aggiorna Data/Ora
+                    <input 
+                      type="datetime-local" 
+                      name="start_time" 
+                      defaultValue={new Date(match.start_time).toISOString().slice(0, 16)} 
+                      className="text-xs bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-indigo-500" 
+                      required 
+                    />
+                    <button type="submit" className="text-xs bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-4 py-2 rounded-lg transition-colors">
+                      Aggiorna
                     </button>
                   </ActionForm>
                 )}
