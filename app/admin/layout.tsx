@@ -52,6 +52,12 @@ export default async function AdminLayout({
           <Link href="/admin/matches" className="px-5 py-3 rounded-xl hover:bg-slate-800/80 hover:text-white hover:shadow-lg transition-all font-medium border border-transparent hover:border-slate-700/50">
             Gestione Partite
           </Link>
+
+          <div className="flex-1"></div>
+
+          <Link href="/dashboard" className="px-5 py-3 mt-8 bg-indigo-600/20 hover:bg-indigo-600/40 text-indigo-300 hover:text-indigo-100 rounded-xl transition-all font-bold border border-indigo-500/30 text-center shadow-lg hover:shadow-indigo-500/20 flex justify-center items-center gap-2">
+            <span>←</span> Torna all'App
+          </Link>
         </nav>
       </aside>
       

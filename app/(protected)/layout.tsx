@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import LiquidBackground from '@/app/components/LiquidBackground'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -27,24 +28,25 @@ export default async function ProtectedLayout({
   console.log("SERVER DEBUG Layout - user.id:", user.id, " profile:", profile, " error:", profileError)
 
   return (
-    <div className="min-h-screen flex flex-col bg-transparent">
-      <header className="sticky top-0 z-50 bg-white/40 backdrop-blur-xl border-b border-white/60 shadow-sm">
+    <div className="min-h-screen flex flex-col relative text-slate-200 font-sans">
+      <LiquidBackground />
+      <header className="sticky top-0 z-50 bg-slate-900/30 backdrop-blur-2xl border-b border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.1)]">
         <div className="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
-          <Link href="/dashboard" className="text-xl font-bold tracking-tight text-indigo-900 flex items-center gap-2">
-            <span className="bg-gradient-to-br from-indigo-600 to-purple-600 text-transparent bg-clip-text font-black text-2xl">GB</span>
+          <Link href="/dashboard" className="text-xl font-bold tracking-tight text-white flex items-center gap-2 group">
+            <span className="bg-gradient-to-br from-indigo-400 to-purple-400 text-transparent bg-clip-text font-black text-2xl group-hover:from-indigo-300 group-hover:to-purple-300 transition-all drop-shadow-[0_0_15px_rgba(99,102,241,0.5)]">GB</span>
           </Link>
           <nav className="flex space-x-6 items-center">
-            <Link href="/matches" className="text-slate-600 hover:text-indigo-700 font-medium transition-colors">
+            <Link href="/matches" className="text-slate-300 hover:text-white font-medium transition-colors hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]">
               Palinsesto
             </Link>
-            <Link href="/leaderboard" className="text-slate-600 hover:text-indigo-700 font-medium transition-colors">
+            <Link href="/leaderboard" className="text-slate-300 hover:text-white font-medium transition-colors hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]">
               Classifica
             </Link>
-            <Link href="/history" className="text-slate-600 hover:text-indigo-700 font-medium transition-colors">
+            <Link href="/history" className="text-slate-300 hover:text-white font-medium transition-colors hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]">
               Storico
             </Link>
             {profile?.role === 'admin' && (
-              <Link href="/admin" className="px-3 py-1 bg-indigo-600/10 border border-indigo-600/20 text-indigo-700 rounded-lg text-sm font-bold shadow-sm hover:bg-indigo-600/20 transition-colors backdrop-blur-sm">
+              <Link href="/admin" className="px-4 py-1.5 bg-indigo-500/20 border border-indigo-400/30 text-indigo-300 rounded-xl text-sm font-bold shadow-[0_0_15px_rgba(99,102,241,0.2)] hover:bg-indigo-500/30 hover:shadow-[0_0_20px_rgba(99,102,241,0.4)] transition-all backdrop-blur-md">
                 Admin
               </Link>
             )}
