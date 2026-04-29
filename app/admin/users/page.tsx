@@ -7,7 +7,7 @@ export default async function AdminUsersPage() {
   const { data: users, error } = await supabase
     .from('profiles')
     .select('*')
-    .order('created_at', { ascending: false })
+    .order('updated_at', { ascending: false })
 
   return (
     <div className="space-y-6">
