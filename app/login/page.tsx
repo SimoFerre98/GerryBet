@@ -28,7 +28,8 @@ export default function LoginPage() {
     if (error) {
       setMessage(error.message)
     } else {
-      setMessage('Controlla la tua email per confermare l\'iscrizione.')
+      router.push('/')
+      router.refresh()
     }
     setLoading(false)
   }

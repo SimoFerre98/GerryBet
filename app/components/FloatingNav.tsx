@@ -2,12 +2,15 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
+import { createClient } from '@/lib/supabase/client';
 
 export default function FloatingNav({ isAdmin }: { isAdmin: boolean }) {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
+  const supabase = createClient();
 
   const navItems = [
     { name: 'Dashboard', href: '/dashboard', icon: '🏠' },
@@ -53,6 +56,20 @@ export default function FloatingNav({ isAdmin }: { isAdmin: boolean }) {
                   </Link>
                 );
               })}
+
+              <div className="h-px w-full bg-white/10 my-1"></div>
+              
+              <button
+                onClick={async () => {
+                  await supabase.auth.signOut()
+                  router.push('/login')
+                  router.refresh()
+                }}
+                className="flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-300 font-medium text-red-400 hover:bg-red-500/10 hover:text-red-300 w-full text-left"
+              >
+                <span className="text-xl">🚪</span>
+                Logout
+              </button>
             </motion.div>
           )}
         </AnimatePresence>

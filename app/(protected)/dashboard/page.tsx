@@ -53,14 +53,6 @@ export default async function DashboardPage() {
           <p className="text-indigo-100/70 font-medium">Controlla lo storico delle tue scommesse passate e tieni d'occhio lo stato di quelle ancora aperte.</p>
         </Link>
       </div>
-      
-      <div className="mt-12 flex flex-col items-center gap-4">
-        <form action="/auth/signout" method="post">
-          <button className="px-6 py-3 text-red-400/80 hover:text-red-400 bg-slate-900/20 hover:bg-red-500/10 backdrop-blur-md border border-red-500/10 hover:border-red-500/30 rounded-2xl text-sm font-bold transition-all duration-300 shadow-[0_0_15px_rgba(239,68,68,0.1)]">
-            Disconnetti account
-          </button>
-        </form>
-      </div>
     </div>
   )
 }

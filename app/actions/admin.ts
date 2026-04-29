@@ -50,3 +50,40 @@ export async function rechargePoints(formData: FormData) {
 
   revalidatePath('/admin/users')
 }
+
+export async function updateUserRole(formData: FormData) {
+  const supabase = await createClient()
+  
+  // Verify Admin
+  const { data: { user }, error: userError } = await supabase.auth.getUser()
+  if (userError || !user) throw new Error('Not authenticated')
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .single()
+
+  if (profile?.role !== 'admin') {
+    throw new Error('Not authorized')
+  }
+
+  // Get form data
+  const targetUserId = formData.get('user_id') as string
+  const role = formData.get('role') as string
+
+  if (!targetUserId || !['admin', 'user'].includes(role)) {
+    throw new Error('Invalid input')
+  }
+
+  const { error: updateError } = await supabase
+    .from('profiles')
+    .update({ role })
+    .eq('id', targetUserId)
+
+  if (updateError) {
+    throw new Error('Failed to update role')
+  }
+
+  revalidatePath('/admin/users')
+}
