@@ -92,22 +92,44 @@ export async function createMatch(formData: FormData) {
   const team_b_id = formData.get('team_b_id') as string
   const start_time_val = formData.get('start_time') as string
   
-  if (!team_a_id || !team_b_id || !start_time_val) {
-    throw new Error('Tutti i campi sono obbligatori')
+  const odd1 = parseFloat(formData.get('odd_1') as string)
+  const oddX = parseFloat(formData.get('odd_x') as string)
+  const odd2 = parseFloat(formData.get('odd_2') as string)
+
+  if (!team_a_id || !team_b_id || !start_time_val || isNaN(odd1) || isNaN(oddX) || isNaN(odd2)) {
+    throw new Error('Tutti i campi (incluso 1, X, 2) sono obbligatori')
   }
 
   if (team_a_id === team_b_id) {
     throw new Error('Una squadra non può giocare contro se stessa!')
   }
 
-  const { data, error } = await supabase
+  // 1. Create Match
+  const { data: match, error: matchError } = await supabase
     .from('matches')
     .insert({ team_a_id, team_b_id, start_time: new Date(start_time_val).toISOString() })
     .select()
+    .single()
 
-  if (error) throw new Error('Failed to create match: ' + error.message)
+  if (matchError) throw new Error('Failed to create match: ' + matchError.message)
+
+  // 2. Create standard 1X2 odds
+  const { error: oddsError } = await supabase
+    .from('odds')
+    .insert([
+      { match_id: match.id, description: '1', value: odd1, type: '1x2' },
+      { match_id: match.id, description: 'X', value: oddX, type: '1x2' },
+      { match_id: match.id, description: '2', value: odd2, type: '1x2' }
+    ])
+
+  if (oddsError) {
+    // Cleanup match if odds fail
+    await supabase.from('matches').delete().eq('id', match.id)
+    throw new Error('Failed to create odds: ' + oddsError.message)
+  }
+
   revalidatePath('/admin/matches')
-  return data?.[0]
+  revalidatePath('/matches')
 }
 
 export async function deleteTeam(formData: FormData) {

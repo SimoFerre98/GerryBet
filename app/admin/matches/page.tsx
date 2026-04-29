@@ -26,33 +26,53 @@ export default async function AdminMatchesPage() {
       {/* Creazione Match */}
       <div className="bg-slate-800/80 backdrop-blur-md rounded-2xl p-6 border border-slate-700 shadow-xl">
         <h2 className="text-xl font-bold text-white mb-4">Nuova Partita</h2>
-        <ActionForm actionFunc={createMatch} successMessage="Partita creata con successo!" className="flex flex-col md:flex-row gap-4 items-end">
-          <div className="flex-1 w-full">
-            <label className="text-xs text-slate-400 mb-1 block">Squadra di Casa</label>
-            <select name="team_a_id" className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500" required>
-              <option value="">Seleziona...</option>
-              {teams?.map(t => <option key={t.id} value={t.id}>{t.name} (PR: {t.power_ranking})</option>)}
-            </select>
+        <ActionForm actionFunc={createMatch} successMessage="Partita creata con successo!" className="flex flex-col gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
+            <div className="w-full">
+              <label className="text-xs text-slate-400 mb-1 block">Squadra di Casa</label>
+              <select name="team_a_id" className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500" required>
+                <option value="">Seleziona...</option>
+                {teams?.map(t => <option key={t.id} value={t.id}>{t.name} (PR: {t.power_ranking})</option>)}
+              </select>
+            </div>
+            <div className="w-full">
+              <label className="text-xs text-slate-400 mb-1 block">Squadra in Trasferta</label>
+              <select name="team_b_id" className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500" required>
+                <option value="">Seleziona...</option>
+                {teams?.map(t => <option key={t.id} value={t.id}>{t.name} (PR: {t.power_ranking})</option>)}
+              </select>
+            </div>
+            <div className="w-full">
+              <label className="text-xs text-slate-400 mb-1 block">Data e Ora Inizio</label>
+              <input 
+                type="datetime-local" 
+                name="start_time" 
+                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500" 
+                required 
+              />
+            </div>
           </div>
-          <div className="flex items-center justify-center -mb-2 px-2 text-slate-500 font-bold hidden md:block">VS</div>
-          <div className="flex-1 w-full">
-            <label className="text-xs text-slate-400 mb-1 block">Squadra in Trasferta</label>
-            <select name="team_b_id" className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500" required>
-              <option value="">Seleziona...</option>
-              {teams?.map(t => <option key={t.id} value={t.id}>{t.name} (PR: {t.power_ranking})</option>)}
-            </select>
+
+          <div className="bg-slate-900/50 p-6 rounded-2xl border border-slate-700/50">
+            <h3 className="text-sm font-bold text-slate-300 mb-4 uppercase tracking-widest">Definisci Quote 1X2</h3>
+            <div className="grid grid-cols-3 gap-4">
+              <div>
+                <label className="text-[10px] text-slate-500 mb-1 block font-bold uppercase">Quota 1 (Casa)</label>
+                <input name="odd_1" type="number" step="0.01" placeholder="Es: 1.50" className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-indigo-500 outline-none" required />
+              </div>
+              <div>
+                <label className="text-[10px] text-slate-500 mb-1 block font-bold uppercase">Quota X (Pareggio)</label>
+                <input name="odd_x" type="number" step="0.01" placeholder="Es: 3.20" className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-indigo-500 outline-none" required />
+              </div>
+              <div>
+                <label className="text-[10px] text-slate-500 mb-1 block font-bold uppercase">Quota 2 (Trasferta)</label>
+                <input name="odd_2" type="number" step="0.01" placeholder="Es: 4.50" className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-indigo-500 outline-none" required />
+              </div>
+            </div>
           </div>
-          <div className="flex-1 w-full">
-            <label className="text-xs text-slate-400 mb-1 block">Data e Ora Inizio</label>
-            <input 
-              type="datetime-local" 
-              name="start_time" 
-              className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500" 
-              required 
-            />
-          </div>
-          <button type="submit" className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-8 rounded-xl transition-colors w-full md:w-auto h-auto">
-            Crea Partita
+
+          <button type="submit" className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-black py-4 px-12 rounded-2xl transition-all shadow-lg shadow-indigo-500/20 uppercase tracking-widest text-sm hover:scale-[1.02] active:scale-95">
+            Crea Partita con Quote
           </button>
         </ActionForm>
       </div>
@@ -101,44 +121,39 @@ export default async function AdminMatchesPage() {
             
             <div className="p-6 flex-1 flex flex-col">
               {/* Quote Esistenti */}
-              <div className="mb-6">
-                <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Quote Associate</h4>
+              <div className="mb-2">
+                <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Esito Finale (1X2)</h4>
                 {match.odds && match.odds.length > 0 ? (
-                  <div className="flex flex-wrap gap-2">
-                    {match.odds.map((o: any) => (
-                      <div key={o.id} className="bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 flex items-center gap-3">
-                        <span className="text-slate-300 font-medium text-sm">{o.description}</span>
-                        <span className="text-indigo-400 font-bold whitespace-nowrap">{o.value}</span>
-                        {match.status === 'open' && (
-                          <ActionForm actionFunc={resolveMatch} successMessage="Partita chiusa!" className="ml-2 pl-2 border-l border-slate-700 flex items-center gap-2">
-                            <input type="hidden" name="match_id" value={match.id} />
-                            <input type="hidden" name="winning_odd_id" value={o.id} />
-                            <input 
-                              name="result" 
-                              placeholder="Risultato (es: 2-1)" 
-                              className="text-[10px] w-20 bg-slate-800 border border-slate-700 rounded px-2 py-1 text-white focus:outline-none focus:border-green-500"
-                              required
-                            />
-                            <button type="submit" className="text-xs bg-green-600/20 text-green-400 hover:bg-green-500 hover:text-white px-2 py-1 rounded transition-colors" title="Imposta come vincente e chiudi match">Vincitrice</button>
-                          </ActionForm>
-                        )}
-                      </div>
-                    ))}
+                  <div className="grid grid-cols-3 gap-3">
+                    {['1', 'X', '2'].map(label => {
+                      const odd = match.odds.find((o: any) => o.description === label);
+                      return (
+                        <div key={label} className="bg-slate-950/50 border border-slate-700/50 rounded-xl p-3 flex flex-col items-center">
+                          <span className="text-[10px] text-slate-500 font-bold mb-1">{label}</span>
+                          <span className="text-lg font-black text-white">{odd?.value || '-'}</span>
+                          {match.status === 'open' && odd && (
+                            <ActionForm actionFunc={resolveMatch} successMessage="Match risolto!" className="mt-3 w-full">
+                              <input type="hidden" name="match_id" value={match.id} />
+                              <input type="hidden" name="winning_odd_id" value={odd.id} />
+                              <div className="flex flex-col gap-2">
+                                <input 
+                                  name="result" 
+                                  placeholder="Risultato (2-1)" 
+                                  className="text-[10px] w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 text-white focus:outline-none focus:border-green-500"
+                                  required
+                                />
+                                <button type="submit" className="w-full py-1.5 bg-green-600/20 text-green-400 hover:bg-green-600 hover:text-white rounded text-[10px] font-bold uppercase tracking-tight transition-all">Vincitrice</button>
+                              </div>
+                            </ActionForm>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
                 ) : (
                   <p className="text-sm text-slate-500 italic">Nessuna quota inserita.</p>
                 )}
               </div>
-
-              {/* Form aggiunta quote (se aperta) */}
-              {match.status === 'open' && (
-                <ActionForm actionFunc={addOdd} successMessage="Quota aggiunta" className="mt-auto border-t border-slate-700 pt-4 flex gap-2">
-                  <input type="hidden" name="match_id" value={match.id} />
-                  <input name="description" placeholder="Es: 1" className="w-1/2 bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:border-indigo-500 outline-none" required />
-                  <input name="value" type="number" step="0.01" placeholder="Quota (Es: 1.50)" className="w-1/3 bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:border-indigo-500 outline-none" required />
-                  <button type="submit" className="bg-indigo-600 hover:bg-indigo-500 text-white p-2 rounded-lg">+</button>
-                </ActionForm>
-              )}
             </div>
           </div>
         ))}

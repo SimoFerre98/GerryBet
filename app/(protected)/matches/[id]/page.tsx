@@ -75,7 +75,12 @@ export default async function MatchPage({
                   <label className="block text-sm font-semibold text-slate-300 uppercase tracking-widest">1. Scegli la quota</label>
                   {match.odds && match.odds.length > 0 ? (
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                      {match.odds.map((odd: any) => (
+                      {match.odds
+                        .sort((a: any, b: any) => {
+                          const order = { '1': 1, 'X': 2, '2': 3 } as any;
+                          return order[a.description] - order[b.description];
+                        })
+                        .map((odd: any) => (
                         <label key={odd.id} className="relative cursor-pointer group">
                           <input type="radio" name="odd_id" value={odd.id} className="peer sr-only" required />
                           <div className="p-5 rounded-2xl border-2 border-white/10 peer-checked:border-indigo-400 peer-checked:bg-indigo-500/20 bg-slate-800/40 hover:bg-slate-700/50 transition-all flex flex-col items-center justify-center text-center shadow-lg hover:shadow-indigo-500/20">
