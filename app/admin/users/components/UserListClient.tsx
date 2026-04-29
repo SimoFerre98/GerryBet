@@ -99,7 +99,8 @@ export default function UserListClient({ initialUsers, currentUserId }: { initia
                 </div>
               </div>
             </li>
-          ))}
+            );
+          })}
           {filteredUsers.length === 0 && (
             <li className="p-8 text-center text-slate-400">
               Nessun utente trovato.
