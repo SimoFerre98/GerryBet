@@ -52,26 +52,128 @@ export async function addPlayer(formData: FormData) {
   revalidatePath('/admin/teams')
 }
 
+export async function updatePlayer(formData: FormData) {
+  const supabase = await createClient()
+  await assertAdmin(supabase)
+
+  const player_id = formData.get('player_id') as string
+  const name = formData.get('name') as string
+  const category = formData.get('category') as string 
+  
+  if (!player_id || !name || !category) throw new Error('Missing fields')
+
+  const { error } = await supabase
+    .from('players')
+    .update({ name, category })
+    .eq('id', player_id)
+
+  if (error) throw new Error('Failed to update player: ' + error.message)
+  revalidatePath('/admin/teams')
+}
+
+export async function deletePlayer(formData: FormData) {
+  const supabase = await createClient()
+  await assertAdmin(supabase)
+
+  const player_id = formData.get('player_id') as string
+  if (!player_id) throw new Error('Missing player_id')
+
+  const { error } = await supabase.from('players').delete().eq('id', player_id)
+  if (error) throw new Error('Failed to delete player: ' + error.message)
+  
+  revalidatePath('/admin/teams')
+}
+
 export async function createMatch(formData: FormData) {
   const supabase = await createClient()
   await assertAdmin(supabase)
 
   const team_a_id = formData.get('team_a_id') as string
   const team_b_id = formData.get('team_b_id') as string
-  const start_time = formData.get('start_time') as string
+  
+  let start_time_val = formData.get('start_time') as string
+  const start_date_val = formData.get('start_date') as string
+  
+  if (start_date_val && start_time_val) {
+    start_time_val = `${start_date_val}T${start_time_val}`
+  }
 
-  if (!team_a_id || !team_b_id || !start_time || team_a_id === team_b_id) {
+  if (!team_a_id || !team_b_id || !start_time_val || team_a_id === team_b_id) {
     throw new Error('Invalid match data')
   }
 
   const { data, error } = await supabase
     .from('matches')
-    .insert({ team_a_id, team_b_id, start_time: new Date(start_time).toISOString() })
+    .insert({ team_a_id, team_b_id, start_time: new Date(start_time_val).toISOString() })
     .select()
 
   if (error) throw new Error('Failed to create match: ' + error.message)
   revalidatePath('/admin/matches')
   return data?.[0]
+}
+
+export async function deleteTeam(formData: FormData) {
+  const supabase = await createClient()
+  await assertAdmin(supabase)
+  
+  const team_id = formData.get('team_id') as string
+  if (!team_id) throw new Error('Missing team_id')
+
+  const { error } = await supabase.from('teams').delete().eq('id', team_id)
+  if (error) throw new Error('Failed to delete team: ' + error.message)
+  
+  revalidatePath('/admin/teams')
+}
+
+export async function updateTeam(formData: FormData) {
+  const supabase = await createClient()
+  await assertAdmin(supabase)
+  
+  const team_id = formData.get('team_id') as string
+  const name = formData.get('name') as string
+  if (!team_id || !name) throw new Error('Missing team data')
+
+  const { error } = await supabase.from('teams').update({ name }).eq('id', team_id)
+  if (error) throw new Error('Failed to update team: ' + error.message)
+  
+  revalidatePath('/admin/teams')
+}
+
+export async function deleteMatch(formData: FormData) {
+  const supabase = await createClient()
+  await assertAdmin(supabase)
+
+  const match_id = formData.get('match_id') as string
+  if (!match_id) throw new Error('Missing match_id')
+
+  const { error } = await supabase.from('matches').delete().eq('id', match_id)
+  if (error) throw new Error('Failed to delete match: ' + error.message)
+  
+  revalidatePath('/admin/matches')
+}
+
+export async function updateMatch(formData: FormData) {
+  const supabase = await createClient()
+  await assertAdmin(supabase)
+
+  const match_id = formData.get('match_id') as string
+  let start_time_val = formData.get('start_time') as string
+  const start_date_val = formData.get('start_date') as string
+  
+  if (start_date_val && start_time_val) {
+    start_time_val = `${start_date_val}T${start_time_val}`
+  }
+
+  if (!match_id || !start_time_val) throw new Error('Missing match data')
+
+  const { error } = await supabase
+    .from('matches')
+    .update({ start_time: new Date(start_time_val).toISOString() })
+    .eq('id', match_id)
+
+  if (error) throw new Error('Failed to update match: ' + error.message)
+  
+  revalidatePath('/admin/matches')
 }
 
 export async function addOdd(formData: FormData) {

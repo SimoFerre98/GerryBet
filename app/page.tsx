@@ -1,45 +1,39 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import { redirect } from 'next/navigation'
 
 export default async function Home() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
+  if (user) {
+    redirect('/dashboard')
+  }
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-24 bg-gray-50">
-      <div className="max-w-2xl w-full text-center space-y-8">
-        <h1 className="text-6xl font-extrabold text-indigo-600 tracking-tight">GerryBet</h1>
-        <p className="text-2xl text-gray-600 font-medium">
-          Benvenuti nel sito di scommesse del torneo estivo!
-        </p>
+    <main className="flex min-h-[100dvh] flex-col items-center justify-center p-6 bg-transparent">
+      <div className="max-w-md w-full text-center space-y-8 bg-white/40 backdrop-blur-xl border border-white/60 p-10 rounded-[3rem] shadow-2xl shadow-indigo-200/50">
+        <div className="mx-auto w-32 h-32 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center mb-6 shadow-xl shadow-indigo-300 transform transition hover:scale-105">
+          <span className="text-5xl font-black text-white drop-shadow-md">GB</span>
+        </div>
         
-        <div className="pt-8 flex flex-col items-center space-y-6">
-          {user ? (
-            <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-100 space-y-4 w-full max-w-md">
-              <p className="text-xl text-gray-700">
-                Ciao, <span className="font-bold text-indigo-600">{user.email}</span>!
-              </p>
-              <div className="pt-4">
-                <form action="/auth/signout" method="post">
-                  <button className="w-full px-6 py-3 bg-red-500 text-white font-semibold rounded-lg shadow hover:bg-red-600 transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] cursor-pointer">
-                    Esci dal tuo account
-                  </button>
-                </form>
-              </div>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              <Link 
-                href="/login" 
-                className="inline-block px-10 py-4 bg-indigo-600 text-white text-lg font-bold rounded-xl shadow-xl hover:bg-indigo-700 transition-all duration-200 transform hover:scale-[1.05] active:scale-[0.95]"
-              >
-                Accedi o Registrati
-              </Link>
-              <p className="text-sm text-gray-500 italic">
-                Crea un account per iniziare a scommettere
-              </p>
-            </div>
-          )}
+        <div className="space-y-2">
+          <h1 className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-800 to-purple-700 tracking-tight">GerryBet</h1>
+          <p className="text-lg text-slate-700 font-medium">
+            Divertiti scommettendo sulle partite del nostro torneo estivo.
+          </p>
+        </div>
+        
+        <div className="pt-6 space-y-4">
+          <Link 
+            href="/login" 
+            className="block w-full px-8 py-4 bg-white/80 backdrop-blur-sm border border-white text-indigo-700 text-lg font-bold rounded-2xl shadow-lg hover:bg-white hover:shadow-xl hover:text-indigo-800 transition-all duration-300 transform hover:-translate-y-1 active:translate-y-0"
+          >
+            Inizia a Giocare
+          </Link>
+          <p className="text-sm text-slate-600 font-medium py-2 px-4 rounded-xl bg-indigo-50/50 inline-block border border-indigo-100/50">
+            🎁 Ricevi 100 GP gratuiti all'iscrizione!
+          </p>
         </div>
       </div>
     </main>
