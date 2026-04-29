@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import ToastProvider from '@/app/components/ToastProvider'
+import FloatingNav from '@/app/components/FloatingNav'
 
 export default async function AdminLayout({
   children,
@@ -27,46 +28,32 @@ export default async function AdminLayout({
   }
 
   return (
-    <div className="min-h-screen bg-slate-900/95 flex flex-col md:flex-row relative">
+    <div className="min-h-screen bg-slate-900/95 relative pb-32">
       <ToastProvider />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-indigo-900/40 via-slate-900 to-slate-950 -z-10"></div>
       
-      {/* Sidebar */}
-      <aside className="w-full md:w-72 bg-slate-900/50 backdrop-blur-xl border-r border-slate-700/50 text-slate-300 flex-shrink-0 flex flex-col md:h-screen sticky top-0 shadow-2xl">
-        <div className="p-8 border-b border-slate-700/50">
-          <Link href="/dashboard" className="text-2xl font-bold tracking-tight text-white flex items-center gap-3 transition-transform hover:scale-105">
-            <span className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 font-extrabold text-white flex items-center justify-center shadow-lg shadow-indigo-900/50">GB</span>
-            Admin Panel
-          </Link>
+      {/* Top Header for Admin (Simplified) */}
+      <header className="p-6 md:p-8 flex items-center justify-between border-b border-white/5 backdrop-blur-md bg-slate-950/20 sticky top-0 z-50">
+        <Link href="/admin" className="text-xl md:text-2xl font-bold tracking-tight text-white flex items-center gap-3 transition-transform hover:scale-105">
+          <span className="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 font-extrabold text-white flex items-center justify-center shadow-lg shadow-indigo-900/50 text-sm md:text-base">GB</span>
+          <span className="hidden sm:inline">Admin Panel</span>
+          <span className="sm:hidden">Admin</span>
+        </Link>
+        <div className="flex items-center gap-2 text-xs font-bold text-slate-500 uppercase tracking-widest bg-white/5 px-3 py-1.5 rounded-lg border border-white/5">
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          Sistema Attivo
         </div>
-        <nav className="p-6 flex-1 space-y-3 flex flex-col">
-          <Link href="/admin" className="px-5 py-3 rounded-xl hover:bg-slate-800/80 hover:text-white hover:shadow-lg transition-all font-medium border border-transparent hover:border-slate-700/50">
-            Dashboard
-          </Link>
-          <Link href="/admin/users" className="px-5 py-3 rounded-xl hover:bg-slate-800/80 hover:text-white hover:shadow-lg transition-all font-medium border border-transparent hover:border-slate-700/50">
-            Gestione Utenti (GP)
-          </Link>
-          <Link href="/admin/teams" className="px-5 py-3 rounded-xl hover:bg-slate-800/80 hover:text-white hover:shadow-lg transition-all font-medium border border-transparent hover:border-slate-700/50">
-            Gestione Squadre
-          </Link>
-          <Link href="/admin/matches" className="px-5 py-3 rounded-xl hover:bg-slate-800/80 hover:text-white hover:shadow-lg transition-all font-medium border border-transparent hover:border-slate-700/50">
-            Gestione Partite
-          </Link>
-
-          <div className="flex-1"></div>
-
-          <Link href="/dashboard" className="px-5 py-3 mt-8 bg-indigo-600/20 hover:bg-indigo-600/40 text-indigo-300 hover:text-indigo-100 rounded-xl transition-all font-bold border border-indigo-500/30 text-center shadow-lg hover:shadow-indigo-500/20 flex justify-center items-center gap-2">
-            <span>←</span> Torna all'App
-          </Link>
-        </nav>
-      </aside>
+      </header>
       
       {/* Main Content */}
-      <main className="flex-1 p-6 md:p-10 text-slate-200">
-        <div className="max-w-6xl mx-auto backdrop-blur-sm">
+      <main className="p-6 md:p-10 text-slate-200 relative z-10">
+        <div className="max-w-6xl mx-auto">
           {children}
         </div>
       </main>
+
+      {/* Floating Navigation Pill */}
+      <FloatingNav isAdmin={true} />
     </div>
   )
 }
