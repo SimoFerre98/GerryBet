@@ -194,12 +194,14 @@ export async function resolveMatch(formData: FormData) {
 
   const match_id = formData.get('match_id') as string
   const winning_odd_id = formData.get('winning_odd_id') as string
+  const result = formData.get('result') as string || 'Conclusa'
 
-  if (!match_id || !winning_odd_id) throw new Error('Missing fields')
+  if (!match_id || !winning_odd_id) throw new Error('Campi mancanti')
 
   const { error } = await supabase.rpc('resolve_match_bets', {
     p_match_id: match_id,
-    p_winning_odd_id: winning_odd_id
+    p_winning_odd_id: winning_odd_id,
+    p_result: result
   })
 
   if (error) throw new Error('Failed to resolve match: ' + error.message)

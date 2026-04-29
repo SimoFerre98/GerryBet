@@ -110,9 +110,15 @@ export default async function AdminMatchesPage() {
                         <span className="text-slate-300 font-medium text-sm">{o.description}</span>
                         <span className="text-indigo-400 font-bold whitespace-nowrap">{o.value}</span>
                         {match.status === 'open' && (
-                          <ActionForm actionFunc={resolveMatch} successMessage="Partita chiusa e scommesse pagate!" className="ml-2 pl-2 border-l border-slate-700">
+                          <ActionForm actionFunc={resolveMatch} successMessage="Partita chiusa!" className="ml-2 pl-2 border-l border-slate-700 flex items-center gap-2">
                             <input type="hidden" name="match_id" value={match.id} />
                             <input type="hidden" name="winning_odd_id" value={o.id} />
+                            <input 
+                              name="result" 
+                              placeholder="Risultato (es: 2-1)" 
+                              className="text-[10px] w-20 bg-slate-800 border border-slate-700 rounded px-2 py-1 text-white focus:outline-none focus:border-green-500"
+                              required
+                            />
                             <button type="submit" className="text-xs bg-green-600/20 text-green-400 hover:bg-green-500 hover:text-white px-2 py-1 rounded transition-colors" title="Imposta come vincente e chiudi match">Vincitrice</button>
                           </ActionForm>
                         )}
