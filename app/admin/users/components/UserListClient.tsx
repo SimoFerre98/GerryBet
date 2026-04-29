@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { rechargePoints, updateUserRole } from '@/app/actions/admin'
-import ActionForm from '@/app/admin/components/ActionForm'
+import { ActionForm } from '@/app/admin/components/ActionForm'
 
 type User = {
   id: string
@@ -54,7 +54,7 @@ export default function UserListClient({ initialUsers }: { initialUsers: User[] 
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-                  <ActionForm action={updateUserRole} className="flex items-center gap-2 bg-slate-900 p-2 rounded-xl border border-slate-700 w-full sm:w-auto">
+                  <ActionForm actionFunc={updateUserRole} className="flex items-center gap-2 bg-slate-900 p-2 rounded-xl border border-slate-700 w-full sm:w-auto">
                     <input type="hidden" name="user_id" value={u.id} />
                     <select 
                       name="role" 
@@ -69,7 +69,7 @@ export default function UserListClient({ initialUsers }: { initialUsers: User[] 
                     </button>
                   </ActionForm>
 
-                  <ActionForm action={rechargePoints} className="flex items-center gap-2 bg-slate-900 p-2 rounded-xl border border-slate-700 w-full sm:w-auto">
+                  <ActionForm actionFunc={rechargePoints} className="flex items-center gap-2 bg-slate-900 p-2 rounded-xl border border-slate-700 w-full sm:w-auto">
                     <input type="hidden" name="user_id" value={u.id} />
                     <input 
                       type="number" 
