@@ -4,6 +4,8 @@ import UserListClient from './components/UserListClient'
 export default async function AdminUsersPage() {
   const supabase = await createClient()
 
+  const { data: { user } } = await supabase.auth.getUser()
+
   const { data: users, error } = await supabase
     .from('profiles')
     .select('*')
@@ -15,7 +17,7 @@ export default async function AdminUsersPage() {
       <p className="text-slate-400">Visualizza gli utenti registrati, cambia i ruoli e ricarica i GerryPoints.</p>
 
       <div className="mt-8">
-        <UserListClient initialUsers={users || []} />
+        <UserListClient initialUsers={users || []} currentUserId={user?.id || ''} />
       </div>
     </div>
   )
