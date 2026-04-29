@@ -27,8 +27,8 @@ export default async function AdminDashboardPage() {
         </div>
         
         <div className="bg-indigo-900 border border-indigo-700 p-6 rounded-2xl shadow-lg">
-          <h3 className="text-indigo-200 font-medium text-sm uppercase tracking-wider">Flusso GP Scommessi</h3>
-          <p className="text-4xl font-black text-white mt-2">{totalGPCirculation} GP</p>
+          <h3 className="text-indigo-200 font-medium text-sm uppercase tracking-wider">Flusso GC Scommessi</h3>
+          <p className="text-4xl font-black text-white mt-2">{totalGPCirculation} GC</p>
         </div>
       </div>
     </div>

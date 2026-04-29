@@ -91,7 +91,7 @@ export default async function MatchPage({
                 </div>
 
                 <div className="space-y-4">
-                  <label className="block text-sm font-semibold text-slate-300 uppercase tracking-widest">2. Inserisci l'importo (GP)</label>
+                  <label className="block text-sm font-semibold text-slate-300 uppercase tracking-widest">2. Inserisci l'importo (GC)</label>
                   <div className="flex items-center gap-4 max-w-xs relative">
                     <input 
                       type="number" 
@@ -102,10 +102,10 @@ export default async function MatchPage({
                       placeholder="0" 
                       required 
                     />
-                    <span className="absolute right-6 font-bold text-indigo-400">GP</span>
+                    <span className="absolute right-6 font-bold text-indigo-400">GC</span>
                   </div>
-                  <p className="text-sm text-slate-400">
-                    Saldo disponibile: <span className="font-black text-indigo-300">{profile?.gerry_points} GP</span>
+                  <p className="mt-4 text-xs font-semibold text-slate-400 uppercase tracking-tighter">
+                    Saldo disponibile: <span className="font-black text-indigo-300">{profile?.gerry_points} GC</span>
                   </p>
                 </div>
 

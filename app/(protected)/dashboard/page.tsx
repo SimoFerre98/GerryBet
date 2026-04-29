@@ -29,7 +29,7 @@ export default async function DashboardPage() {
           <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-purple-500/10 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
           <p className="text-xs font-bold text-indigo-300 uppercase tracking-widest mb-2 drop-shadow-md">Il tuo saldo</p>
           <p className="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-br from-indigo-400 to-purple-400 drop-shadow-[0_0_25px_rgba(165,180,252,0.4)]">
-            {profile?.gerry_points !== undefined ? profile.gerry_points : '0'} <span className="text-3xl text-indigo-400/50">GP</span>
+            {profile?.gerry_points !== undefined ? profile.gerry_points : '0'} <span className="text-3xl text-indigo-400/50">GC</span>
           </p>
         </div>
       </div>

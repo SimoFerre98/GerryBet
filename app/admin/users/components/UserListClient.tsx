@@ -7,6 +7,7 @@ import { ActionForm } from '@/app/admin/components/ActionForm'
 type User = {
   id: string
   username: string | null
+  email: string | null
   gerry_points: number
   role: string
 }
@@ -16,6 +17,7 @@ export default function UserListClient({ initialUsers, currentUserId }: { initia
 
   const filteredUsers = initialUsers.filter((u) => 
     (u.username || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (u.email || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
     u.id.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
@@ -24,7 +26,7 @@ export default function UserListClient({ initialUsers, currentUserId }: { initia
       <div className="mb-6">
         <input 
           type="text" 
-          placeholder="Cerca per nome utente o ID..." 
+          placeholder="Cerca per username, email o ID..." 
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="w-full px-4 py-3 bg-slate-800/50 text-white rounded-xl border border-slate-700 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
@@ -51,13 +53,14 @@ export default function UserListClient({ initialUsers, currentUserId }: { initia
                     `}>
                       {u.role}
                     </span>
-                    <span className="text-slate-400 text-sm truncate max-w-full">{u.id}</span>
+                    <span className="text-slate-300 text-sm font-medium">{u.email}</span>
+                    <span className="text-slate-500 text-[10px] truncate max-w-full">ID: {u.id}</span>
                   </div>
                 </div>
 
                 <div className="flex flex-col md:flex-row items-center gap-4 w-full xl:w-auto">
                   <div className="text-center md:text-right md:w-32 flex-shrink-0">
-                    <p className="text-xs text-slate-400 uppercase font-semibold">GP Attuali</p>
+                    <p className="text-xs text-slate-400 uppercase font-semibold">GC Attuali</p>
                     <p className="font-black text-2xl text-white">{u.gerry_points}</p>
                   </div>
 
@@ -93,7 +96,7 @@ export default function UserListClient({ initialUsers, currentUserId }: { initia
                       min="1"
                     />
                     <button type="submit" className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-bold rounded-lg transition-colors whitespace-nowrap">
-                      Ricarica GP
+                      Ricarica GC
                     </button>
                   </ActionForm>
                 </div>

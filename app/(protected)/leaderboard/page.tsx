@@ -77,7 +77,7 @@ export default async function LeaderboardPage() {
                   {index + 1}
                 </span>
                 <span className="flex-1 font-bold text-slate-100">{p.username || 'Utente'}</span>
-                <span className="font-black text-indigo-400 drop-shadow-[0_0_8px_rgba(129,140,248,0.5)]">{p.gerry_points} GP</span>
+                <span className="font-black text-indigo-400 drop-shadow-[0_0_8px_rgba(129,140,248,0.5)]">{p.gerry_points} GC</span>
               </li>
             ))}
           </ul>

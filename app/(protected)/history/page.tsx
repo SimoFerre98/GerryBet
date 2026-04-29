@@ -47,11 +47,11 @@ export default async function HistoryPage() {
                 <div className="flex items-center gap-6 bg-slate-900/40 p-4 rounded-2xl border border-white/5">
                   <div className="text-right">
                     <p className="text-[10px] text-slate-400 uppercase tracking-widest font-semibold mb-1">Importo</p>
-                    <p className="font-bold text-white text-lg">{bet.amount_gp} <span className="text-sm text-slate-400">GP</span></p>
+                    <p className="font-bold text-white text-lg">{bet.amount_gp} <span className="text-sm text-slate-400">GC</span></p>
                   </div>
                   <div className="text-right border-l border-white/10 pl-6">
                     <p className="text-[10px] text-slate-400 uppercase tracking-widest font-semibold mb-1">Vincita Pot.</p>
-                    <p className="font-black text-indigo-400 text-lg drop-shadow-[0_0_8px_rgba(129,140,248,0.5)]">{Math.floor(bet.amount_gp * bet.odd.value)} <span className="text-sm text-indigo-400/50">GP</span></p>
+                    <p className="font-black text-indigo-400 text-lg drop-shadow-[0_0_8px_rgba(129,140,248,0.5)]">{Math.floor(bet.amount_gp * bet.odd.value)} <span className="text-sm text-indigo-400/50">GC</span></p>
                   </div>
                   <div className="min-w-[110px] text-center border-l border-white/10 pl-6">
                     <span className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest shadow-md inline-block w-full

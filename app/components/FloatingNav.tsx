@@ -14,17 +14,20 @@ export default function FloatingNav({ isAdmin }: { isAdmin: boolean }) {
 
   const isAdminArea = pathname?.startsWith('/admin');
 
-  let navItems = [
+  const userNavItems = [
     { name: 'Dashboard', href: '/dashboard', icon: '🏠' },
-    { name: 'Palinsesto', href: '/matches', icon: '⚽' },
+    { name: 'Match Center', href: '/matches', icon: '⚽' },
     { name: 'Classifica', href: '/leaderboard', icon: '🏆' },
-    { name: 'Storico', href: '/history', icon: '📜' },
+    { name: 'Scommesse', href: '/history', icon: '📜' },
+    { name: 'Profilo', href: '/profile', icon: '👤' },
   ];
+
+  let navItems = [...userNavItems];
 
   if (isAdminArea) {
     navItems = [
       { name: 'Admin Home', href: '/admin', icon: '🛠️' },
-      { name: 'Utenti (GP)', href: '/admin/users', icon: '👥' },
+      { name: 'Utenti (GC)', href: '/admin/users', icon: '👥' },
       { name: 'Squadre', href: '/admin/teams', icon: '🛡️' },
       { name: 'Partite', href: '/admin/matches', icon: '🏟️' },
       { name: 'Torna all\'App', href: '/dashboard', icon: '🔙' },

@@ -8,6 +8,7 @@ import Link from 'next/link'
 export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [username, setUsername] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
@@ -16,6 +17,10 @@ export default function LoginPage() {
 
   const handleSignUp = async (e?: React.FormEvent) => {
     if (e) e.preventDefault()
+    if (!username) {
+      setMessage('Lo username è obbligatorio per la registrazione')
+      return
+    }
     setLoading(true)
     setMessage('')
     const { error } = await supabase.auth.signUp({
@@ -23,6 +28,9 @@ export default function LoginPage() {
       password,
       options: {
         emailRedirectTo: `${window.location.origin}/auth/callback`,
+        data: {
+          username: username
+        }
       },
     })
     if (error) {
@@ -62,6 +70,17 @@ export default function LoginPage() {
         </div>
         
         <form className="space-y-5" onSubmit={handleSignIn}>
+          <div>
+            <label htmlFor="username" className="block text-sm font-bold text-indigo-900 mb-1 ml-1">Username (solo per nuovi utenti)</label>
+            <input
+              id="username"
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="w-full bg-white/60 border border-white/80 rounded-2xl px-4 py-3 text-indigo-950 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 shadow-sm transition-all text-sm"
+              placeholder="Scegli il tuo username"
+            />
+          </div>
           <div>
             <label htmlFor="email" className="block text-sm font-bold text-indigo-900 mb-1 ml-1">Email</label>
             <input
@@ -127,7 +146,7 @@ export default function LoginPage() {
           </div>
         </form>
         {message && (
-          <div className={`mt-6 p-4 rounded-xl text-sm font-medium text-center border ${message.includes('Controlla') ? 'bg-green-50/50 border-green-200 text-green-700' : 'bg-red-50/50 border-red-200 text-red-700'}`}>
+          <div className={`mt-6 p-4 rounded-xl text-sm font-medium text-center border ${message.includes('Controlla') || message.includes('successo') ? 'bg-green-50/50 border-green-200 text-green-700' : 'bg-red-50/50 border-red-200 text-red-700'}`}>
             {message}
           </div>
         )}

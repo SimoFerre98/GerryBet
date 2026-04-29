@@ -14,7 +14,7 @@ export default async function AdminUsersPage() {
   return (
     <div className="space-y-6">
       <h1 className="text-3xl font-bold text-white">Gestione Utenti</h1>
-      <p className="text-slate-400">Visualizza gli utenti registrati, cambia i ruoli e ricarica i GerryPoints.</p>
+      <p className="text-slate-400">Visualizza gli utenti registrati, cambia i ruoli e ricarica i GerryCoin.</p>
 
       <div className="mt-8">
         <UserListClient initialUsers={users || []} currentUserId={user?.id || ''} />
