@@ -1,5 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
-import { createMatch, addOdd, resolveMatch, deleteMatch, updateMatch } from '@/app/actions/admin_entities'
+import { createMatch, addOdd, resolveMatch, deleteMatch, updateMatch, resolveMatchByScore } from '@/app/actions/admin_entities'
 import { ActionForm } from '@/app/admin/components/ActionForm'
 
 export default async function AdminMatchesPage() {
@@ -121,39 +121,51 @@ export default async function AdminMatchesPage() {
             
             <div className="p-6 flex-1 flex flex-col">
               {/* Quote Esistenti */}
-              <div className="mb-2">
-                <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Esito Finale (1X2)</h4>
-                {match.odds && match.odds.length > 0 ? (
-                  <div className="grid grid-cols-3 gap-3">
-                    {['1', 'X', '2'].map(label => {
-                      const odd = match.odds.find((o: any) => o.description === label);
-                      return (
-                        <div key={label} className="bg-slate-950/50 border border-slate-700/50 rounded-xl p-3 flex flex-col items-center">
-                          <span className="text-[10px] text-slate-500 font-bold mb-1">{label}</span>
-                          <span className="text-lg font-black text-white">{odd?.value || '-'}</span>
-                          {match.status === 'open' && odd && (
-                            <ActionForm actionFunc={resolveMatch} successMessage="Match risolto!" className="mt-3 w-full">
-                              <input type="hidden" name="match_id" value={match.id} />
-                              <input type="hidden" name="winning_odd_id" value={odd.id} />
-                              <div className="flex flex-col gap-2">
-                                <input 
-                                  name="result" 
-                                  placeholder="Risultato (2-1)" 
-                                  className="text-[10px] w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 text-white focus:outline-none focus:border-green-500"
-                                  required
-                                />
-                                <button type="submit" className="w-full py-1.5 bg-green-600/20 text-green-400 hover:bg-green-600 hover:text-white rounded text-[10px] font-bold uppercase tracking-tight transition-all">Vincitrice</button>
-                              </div>
-                            </ActionForm>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
-                ) : (
-                  <p className="text-sm text-slate-500 italic">Nessuna quota inserita.</p>
-                )}
+              <div className="mb-4">
+                <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Quote Esito Finale (1X2)</h4>
+                <div className="grid grid-cols-3 gap-3">
+                  {['1', 'X', '2'].map(label => {
+                    const odd = match.odds?.find((o: any) => o.description === label);
+                    return (
+                      <div key={label} className="bg-slate-950/50 border border-slate-700/50 rounded-xl p-3 flex flex-col items-center">
+                        <span className="text-[10px] text-slate-500 font-bold mb-1">{label}</span>
+                        <span className="text-lg font-black text-white">{odd?.value || '-'}</span>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
+
+              {/* Risoluzione Match */}
+              {match.status === 'open' && (
+                <div className="mt-auto pt-6 border-t border-slate-700/50">
+                  <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Chiudi Match e Calcola Vincite</h4>
+                  <ActionForm actionFunc={resolveMatchByScore} successMessage="Match chiuso e scommesse calcolate!" className="bg-slate-950/50 p-4 rounded-2xl border border-indigo-500/20">
+                    <input type="hidden" name="match_id" value={match.id} />
+                    <div className="flex items-center gap-4">
+                      <div className="flex-1">
+                        <label className="text-[10px] text-slate-500 mb-1 block uppercase truncate max-w-[80px]">{match.team_a.name}</label>
+                        <input name="score_a" type="number" placeholder="0" className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white text-center font-bold focus:border-green-500 outline-none" required />
+                      </div>
+                      <span className="text-slate-600 font-bold mt-4">-</span>
+                      <div className="flex-1">
+                        <label className="text-[10px] text-slate-500 mb-1 block uppercase truncate max-w-[80px]">{match.team_b.name}</label>
+                        <input name="score_b" type="number" placeholder="0" className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white text-center font-bold focus:border-green-500 outline-none" required />
+                      </div>
+                      <button type="submit" className="mt-4 bg-green-600 hover:bg-green-500 text-white font-bold py-2 px-4 rounded-xl transition-all shadow-lg shadow-green-500/20 text-[10px] uppercase tracking-wider">
+                        Concludi
+                      </button>
+                    </div>
+                  </ActionForm>
+                </div>
+              )}
+
+              {match.status === 'closed' && (
+                <div className="mt-auto pt-4 flex items-center justify-between">
+                  <span className="text-xs font-bold text-slate-500 uppercase">Risultato Finale</span>
+                  <span className="text-2xl font-black text-indigo-400 drop-shadow-sm">{match.result}</span>
+                </div>
+              )}
             </div>
           </div>
         ))}

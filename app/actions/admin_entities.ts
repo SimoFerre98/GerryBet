@@ -231,4 +231,51 @@ export async function resolveMatch(formData: FormData) {
   revalidatePath('/admin/matches')
   revalidatePath('/history')
   revalidatePath('/dashboard')
+  revalidatePath('/matches')
+}
+
+export async function resolveMatchByScore(formData: FormData) {
+  const supabase = await createClient()
+  await assertAdmin(supabase)
+
+  const match_id = formData.get('match_id') as string
+  const score_a = parseInt(formData.get('score_a') as string)
+  const score_b = parseInt(formData.get('score_b') as string)
+
+  if (!match_id || isNaN(score_a) || isNaN(score_b)) {
+    throw new Error('Inserire un punteggio valido per entrambe le squadre')
+  }
+
+  // 1. Determina l'esito (1, X, o 2)
+  let outcome = 'X'
+  if (score_a > score_b) outcome = '1'
+  else if (score_b > score_a) outcome = '2'
+
+  const resultString = `${score_a}-${score_b}`
+
+  // 2. Recupera l'ID della quota corrispondente a questo esito per il match
+  const { data: odd, error: oddError } = await supabase
+    .from('odds')
+    .select('id')
+    .eq('match_id', match_id)
+    .eq('description', outcome)
+    .single()
+
+  if (oddError || !odd) {
+    throw new Error('Impossibile trovare la quota corrispondente per l\'esito: ' + outcome)
+  }
+
+  // 3. Chiama l'RPC esistente per risolvere le scommesse
+  const { error } = await supabase.rpc('resolve_match_bets', {
+    p_match_id: match_id,
+    p_winning_odd_id: odd.id,
+    p_result: resultString
+  })
+
+  if (error) throw new Error('Errore durante la chiusura del match: ' + error.message)
+  
+  revalidatePath('/admin/matches')
+  revalidatePath('/history')
+  revalidatePath('/dashboard')
+  revalidatePath('/matches')
 }
