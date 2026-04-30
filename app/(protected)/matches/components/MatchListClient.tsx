@@ -106,7 +106,7 @@ export default function MatchListClient({ initialMatches }: { initialMatches: Ma
                 >
                   <Link 
                     href={hasStarted ? '#' : `/matches/${match.id}`}
-                    className={`relative overflow-hidden bg-slate-900/30 backdrop-blur-2xl rounded-[2rem] p-5 md:p-8 shadow-[0_8px_32px_rgba(0,0,0,0.3)] border border-white/10 transition-all duration-300 flex flex-col md:flex-row items-center justify-between gap-5 md:gap-6 block group ${hasStarted ? 'opacity-70' : 'hover:bg-slate-800/40 hover:border-indigo-400/30 hover:shadow-[0_12px_40px_rgba(0,0,0,0.4)] hover:-translate-y-1'}`}
+                    className={`relative overflow-hidden bg-slate-900/30 backdrop-blur-2xl rounded-[2rem] p-4 md:p-8 shadow-[0_8px_32px_rgba(0,0,0,0.3)] border border-white/10 transition-all duration-300 flex flex-col md:flex-row items-center justify-between gap-5 md:gap-6 block group ${hasStarted ? 'opacity-70' : 'hover:bg-slate-800/40 hover:border-indigo-400/30 hover:shadow-[0_12px_40px_rgba(0,0,0,0.4)] hover:-translate-y-1'}`}
                   >
                     <div className="absolute inset-0 bg-gradient-to-r from-indigo-600/5 to-purple-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                     
@@ -125,8 +125,8 @@ export default function MatchListClient({ initialMatches }: { initialMatches: Ma
                         )}
                       </div>
                       
-                      <div className="text-xl md:text-3xl font-black text-white flex justify-between md:justify-start items-center gap-2 md:gap-6 w-full drop-shadow-md">
-                        <span className="flex-1 md:flex-initial text-right md:text-left truncate max-w-[40%] md:max-w-none">{match.team_a.name}</span>
+                      <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 md:gap-6 w-full drop-shadow-md">
+                        <span className="text-xl md:text-3xl font-black text-white text-right truncate">{match.team_a?.name || 'Squadra A'}</span>
                         
                         {isClosed ? (
                           <div className="flex items-center gap-1.5 md:gap-3 bg-slate-950/80 px-3 md:px-5 py-1.5 md:py-2.5 rounded-xl md:rounded-2xl border border-white/10 shadow-inner shrink-0">
@@ -135,12 +135,12 @@ export default function MatchListClient({ initialMatches }: { initialMatches: Ma
                             <span className="text-xl md:text-3xl font-black text-indigo-400">{match.result?.split('-')[1] || '0'}</span>
                           </div>
                         ) : (
-                          <div className="shrink-0 flex items-center justify-center w-10 md:w-14">
+                          <div className="shrink-0 flex items-center justify-center w-10 md:w-16">
                             <span className="text-indigo-400 text-sm md:text-xl font-black bg-indigo-950/50 w-full py-1 md:py-2 rounded-lg border border-indigo-500/30 shadow-inner flex items-center justify-center italic">VS</span>
                           </div>
                         )}
                         
-                        <span className="flex-1 md:flex-initial text-left truncate max-w-[40%] md:max-w-none">{match.team_b.name}</span>
+                        <span className="text-xl md:text-3xl font-black text-white text-left truncate">{match.team_b?.name || 'Squadra B'}</span>
                       </div>
                     </div>
 

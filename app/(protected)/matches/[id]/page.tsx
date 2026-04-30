@@ -51,9 +51,9 @@ export default async function MatchPage({
             })}
           </p>
           <div className="flex flex-col md:flex-row items-center justify-center gap-2 md:gap-4 text-2xl md:text-5xl font-black">
-            <span className="flex-1 text-center md:text-right text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">{match.team_a.name}</span>
+            <span className="flex-1 text-center md:text-right text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">{match.team_a?.name || 'Squadra A'}</span>
             <span className="text-indigo-400 text-sm md:text-2xl px-4 md:px-6 font-bold bg-slate-900/50 rounded-xl py-1 md:py-2 border border-white/10 shadow-inner">vs</span>
-            <span className="flex-1 text-center md:text-left text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">{match.team_b.name}</span>
+            <span className="flex-1 text-center md:text-left text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">{match.team_b?.name || 'Squadra B'}</span>
           </div>
         </div>
         

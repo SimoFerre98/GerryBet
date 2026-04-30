@@ -88,12 +88,12 @@ export default async function AdminMatchesPage() {
                   ${match.status === 'open' ? 'bg-green-500/20 text-green-400' : 'bg-slate-700 text-slate-400'}
                 `}>{match.status === 'open' ? 'Aperta' : 'Chiusa'}</span>
                 <div className="text-xl font-black text-white flex items-center gap-3">
-                  <span>{match.team_a.name}</span>
+                  <span>{match.team_a?.name || 'Squadra A'}</span>
                   <span className="text-slate-500 text-sm font-normal">vs</span>
-                  <span>{match.team_b.name}</span>
+                  <span>{match.team_b?.name || 'Squadra B'}</span>
                 </div>
                 <div className="text-sm text-slate-500 mt-1">
-                  Differenza Power Ranking: {Math.abs((match.team_a.power_ranking || 0) - (match.team_b.power_ranking || 0))}
+                  Differenza Power Ranking: {Math.abs((match.team_a?.power_ranking || 0) - (match.team_b?.power_ranking || 0))}
                 </div>
                 {match.status === 'open' && (
                   <ActionForm actionFunc={updateMatch} successMessage="Data e ora aggiornate" className="flex gap-2 items-center mt-3 bg-slate-900/50 p-2 rounded-xl inline-flex border border-white/5">
@@ -144,12 +144,12 @@ export default async function AdminMatchesPage() {
                     <input type="hidden" name="match_id" value={match.id} />
                     <div className="flex items-center gap-4">
                       <div className="flex-1">
-                        <label className="text-[10px] text-slate-500 mb-1 block uppercase truncate max-w-[80px]">{match.team_a.name}</label>
+                        <label className="text-[10px] text-slate-500 mb-1 block uppercase truncate max-w-[80px]">{match.team_a?.name || 'Squadra A'}</label>
                         <input name="score_a" type="number" placeholder="0" className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white text-center font-bold focus:border-green-500 outline-none" required />
                       </div>
                       <span className="text-slate-600 font-bold mt-4">-</span>
                       <div className="flex-1">
-                        <label className="text-[10px] text-slate-500 mb-1 block uppercase truncate max-w-[80px]">{match.team_b.name}</label>
+                        <label className="text-[10px] text-slate-500 mb-1 block uppercase truncate max-w-[80px]">{match.team_b?.name || 'Squadra B'}</label>
                         <input name="score_b" type="number" placeholder="0" className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white text-center font-bold focus:border-green-500 outline-none" required />
                       </div>
                       <button type="submit" className="mt-4 bg-green-600 hover:bg-green-500 text-white font-bold py-2 px-4 rounded-xl transition-all shadow-lg shadow-green-500/20 text-[10px] uppercase tracking-wider">

@@ -41,6 +41,18 @@ export default function FloatingNav({ isAdmin }: { isAdmin: boolean }) {
       {/* Mobile & Desktop Floating Pill */}
       <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] flex flex-col items-center">
         
+        {/* Backdrop for clicking outside */}
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsOpen(false)}
+              className="fixed inset-0 bg-black/20 backdrop-blur-[2px] z-[-1] cursor-default"
+            />
+          )}
+        </AnimatePresence>
         {/* Expanded Menu */}
         <AnimatePresence>
           {isOpen && (
