@@ -104,9 +104,9 @@ export default function FloatingNav({ isAdmin }: { isAdmin: boolean }) {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => setIsOpen(!isOpen)}
-          className="bg-indigo-600/90 hover:bg-indigo-500 backdrop-blur-md border border-white/20 text-white shadow-[0_0_20px_rgba(79,70,229,0.4)] rounded-full px-6 py-3 flex items-center gap-3 font-bold text-sm tracking-wide transition-colors"
+          className="bg-indigo-600/90 hover:bg-indigo-500 backdrop-blur-md border border-white/20 text-white shadow-[0_0_20px_rgba(79,70,229,0.4)] rounded-full pl-3 pr-6 py-2 flex items-center gap-3 font-bold text-sm tracking-wide transition-colors"
         >
-          <span className="bg-gradient-to-br from-white to-indigo-200 text-transparent bg-clip-text font-black text-xl leading-none">GB</span>
+          <img src="/logo.jpg" alt="Logo" className="w-8 h-8 rounded-full border border-white/30" />
           <span className="w-px h-5 bg-white/30"></span>
           <span>{isOpen ? 'Chiudi' : 'Menu'}</span>
           

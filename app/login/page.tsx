@@ -77,8 +77,8 @@ export default function LoginPage() {
     <div className="flex flex-col items-center justify-center min-h-[100dvh] p-6 bg-transparent">
       <div className="max-w-md w-full bg-white/40 backdrop-blur-xl border border-white/60 p-10 rounded-[3rem] shadow-2xl shadow-indigo-200/50">
         <div className="text-center mb-8">
-          <Link href="/" className="inline-block mx-auto w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center mb-4 shadow-xl shadow-indigo-300 transform transition hover:scale-105">
-            <span className="text-2xl font-black text-white drop-shadow-md">GB</span>
+          <Link href="/" className="inline-block mx-auto w-20 h-20 mb-4 transform transition hover:scale-105 drop-shadow-2xl">
+            <img src="/logo.jpg" alt="GerryBet Logo" className="w-full h-full object-contain rounded-full border-2 border-indigo-400/30 shadow-lg shadow-indigo-500/20" />
           </Link>
           <h2 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-900 to-indigo-600 tracking-tight">Accedi o Registrati</h2>
         </div>
