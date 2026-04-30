@@ -43,16 +43,16 @@ export default async function MatchPage({
       </div>
 
       <div className="bg-slate-900/30 backdrop-blur-2xl rounded-[2rem] shadow-[0_8px_32px_rgba(0,0,0,0.3)] border border-white/10 overflow-hidden relative">
-        <div className="bg-gradient-to-r from-indigo-500/20 to-purple-500/20 border-b border-white/10 p-8 text-center relative overflow-hidden">
+        <div className="bg-gradient-to-r from-indigo-500/20 to-purple-500/20 border-b border-white/10 p-6 md:p-8 text-center relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/20 rounded-full blur-3xl -z-10 pointer-events-none"></div>
-          <p className="text-indigo-200 font-semibold mb-2 text-sm md:text-base tracking-widest uppercase drop-shadow-sm">
+          <p className="text-indigo-200 font-semibold mb-3 md:mb-2 text-xs md:text-base tracking-widest uppercase drop-shadow-sm">
             {new Date(match.start_time).toLocaleString('it-IT', { 
               weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' 
             })}
           </p>
-          <div className="flex flex-col md:flex-row items-center justify-center gap-4 text-4xl md:text-5xl font-black">
+          <div className="flex flex-col md:flex-row items-center justify-center gap-2 md:gap-4 text-2xl md:text-5xl font-black">
             <span className="flex-1 text-center md:text-right text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">{match.team_a.name}</span>
-            <span className="text-indigo-400 text-2xl px-6 font-bold bg-slate-900/50 rounded-xl py-2 border border-white/10 shadow-inner">vs</span>
+            <span className="text-indigo-400 text-sm md:text-2xl px-4 md:px-6 font-bold bg-slate-900/50 rounded-xl py-1 md:py-2 border border-white/10 shadow-inner">vs</span>
             <span className="flex-1 text-center md:text-left text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">{match.team_b.name}</span>
           </div>
         </div>
