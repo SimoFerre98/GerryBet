@@ -23,6 +23,20 @@ export default function LoginPage() {
     }
     setLoading(true)
     setMessage('')
+
+    // Verifica se lo username è già preso
+    const { data: existing } = await supabase
+      .from('profiles')
+      .select('username')
+      .eq('username', username)
+      .maybeSingle()
+
+    if (existing) {
+      setMessage('Questo username è già in uso. Scegline un altro.')
+      setLoading(false)
+      return
+    }
+
     const { error } = await supabase.auth.signUp({
       email,
       password,

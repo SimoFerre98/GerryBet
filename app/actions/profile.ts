@@ -15,12 +15,24 @@ export async function updateProfile(formData: FormData) {
     throw new Error('Lo username deve essere di almeno 3 caratteri')
   }
 
+  // 1. Verifica se lo username esiste già
+  const { data: existingUser } = await supabase
+    .from('profiles')
+    .select('id')
+    .eq('username', username)
+    .single()
+
+  if (existingUser && existingUser.id !== user.id) {
+    throw new Error('Questo username è già in uso da un altro utente')
+  }
+
+  // 2. Aggiorna lo username
   const { error } = await supabase
     .from('profiles')
     .update({ username })
     .eq('id', user.id)
 
-  if (error) throw new Error('Impossibile aggiornare lo username')
+  if (error) throw new Error('Errore durante l\'aggiornamento: ' + error.message)
 
   revalidatePath('/profile')
   revalidatePath('/dashboard')

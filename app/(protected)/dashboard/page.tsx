@@ -21,7 +21,7 @@ export default async function DashboardPage() {
         <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-indigo-500/10 to-transparent pointer-events-none"></div>
         <div className="relative z-10">
           <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 via-purple-300 to-indigo-300 tracking-tight drop-shadow-[0_0_20px_rgba(165,180,252,0.3)]">
-            Ciao, {profile?.username || user?.email}
+            Ciao {profile?.username || user?.email},
           </h1>
           <p className="text-indigo-200/80 font-medium mt-1 text-lg">Bentornato su GerryBet.</p>
         </div>

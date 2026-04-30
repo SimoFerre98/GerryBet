@@ -72,5 +72,4 @@ export async function placeBet(formData: FormData) {
   revalidatePath('/dashboard')
   revalidatePath('/matches')
   revalidatePath('/history')
-  redirect('/history')
 }
