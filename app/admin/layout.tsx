@@ -35,7 +35,7 @@ export default async function AdminLayout({
       {/* Top Header for Admin (Simplified) */}
       <header className="p-6 md:p-8 flex items-center justify-between border-b border-white/5 backdrop-blur-md bg-slate-950/20 sticky top-0 z-50">
         <Link href="/admin" className="text-xl md:text-2xl font-bold tracking-tight text-white flex items-center gap-3 transition-transform hover:scale-105">
-          <span className="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 font-extrabold text-white flex items-center justify-center shadow-lg shadow-indigo-900/50 text-sm md:text-base">GB</span>
+          <img src="/logo.jpg" alt="GerryBet" className="w-8 h-8 md:w-10 md:h-10 rounded-xl shadow-lg shadow-indigo-900/50 border border-white/20" />
           <span className="hidden sm:inline">Admin Panel</span>
           <span className="sm:hidden">Admin</span>
         </Link>
