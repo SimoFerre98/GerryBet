@@ -1,8 +1,12 @@
--- Drop the old trigger and function to be safe
+-- Aggiunge il contatore ricariche al profilo
+-- Ogni volta che un admin aggiunge GC, questo contatore si incrementa
+-- Dopo 3 ricariche, l'utente riceve un bonus di 50 GC
+alter table profiles add column if not exists recharge_count integer default 0;
+
+-- Aggiorna la funzione di creazione utente: NIENTE bonus iscrizione (0 GC)
 drop trigger if exists on_auth_user_created on auth.users;
 drop function if exists public.handle_new_user();
 
--- Create the robust function (0 GC di partenza, bonus dopo 3 ricariche)
 create or replace function public.handle_new_user()
 returns trigger
 language plpgsql
@@ -21,7 +25,6 @@ begin
 end;
 $$;
 
--- Recreate the trigger
 create trigger on_auth_user_created
   after insert on auth.users
   for each row execute procedure public.handle_new_user();

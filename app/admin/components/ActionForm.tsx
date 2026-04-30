@@ -14,8 +14,10 @@ export function ActionForm({ actionFunc, successMessage, children, ...props }: P
       {...props}
       action={async (formData: FormData) => {
         try {
-          await actionFunc(formData)
-          if (successMessage) toast.success(successMessage)
+          const result = await actionFunc(formData)
+          // Se l'azione ritorna un messaggio personalizzato, usa quello
+          const message = result?.message || successMessage
+          if (message) toast.success(message)
         } catch (e: any) {
           toast.error(e.message || 'Si è verificato un errore')
         }

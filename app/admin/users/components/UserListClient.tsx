@@ -9,6 +9,7 @@ type User = {
   username: string | null
   email: string | null
   gerry_points: number
+  recharge_count: number
   role: string
 }
 
@@ -59,9 +60,31 @@ export default function UserListClient({ initialUsers, currentUserId }: { initia
                 </div>
 
                 <div className="flex flex-col md:flex-row items-center gap-4 w-full xl:w-auto">
-                  <div className="text-center md:text-right md:w-32 flex-shrink-0">
-                    <p className="text-xs text-slate-400 uppercase font-semibold">GC Attuali</p>
-                    <p className="font-black text-2xl text-white">{u.gerry_points}</p>
+                  <div className="flex items-center gap-4">
+                    <div className="text-center md:text-right md:w-28 flex-shrink-0">
+                      <p className="text-xs text-slate-400 uppercase font-semibold">GC Attuali</p>
+                      <p className="font-black text-2xl text-white">{u.gerry_points}</p>
+                    </div>
+                    {/* Recharge Progress */}
+                    <div className="flex-shrink-0 text-center">
+                      <p className="text-[10px] text-slate-500 uppercase tracking-wider font-bold mb-1">Ricariche</p>
+                      <div className="flex items-center gap-1">
+                        {[1, 2, 3].map(i => (
+                          <div key={i} className={`w-5 h-5 rounded-full border-2 flex items-center justify-center text-[8px] font-black transition-all ${
+                            (u.recharge_count || 0) >= i
+                              ? 'bg-emerald-500/30 border-emerald-400 text-emerald-400'
+                              : 'bg-slate-800 border-slate-600 text-slate-600'
+                          }`}>
+                            {(u.recharge_count || 0) >= i ? '✓' : i}
+                          </div>
+                        ))}
+                      </div>
+                      {(u.recharge_count || 0) >= 3 ? (
+                        <span className="text-[9px] text-emerald-400 font-bold mt-1 block">🎁 Bonus sbloccato</span>
+                      ) : (
+                        <span className="text-[9px] text-slate-600 mt-1 block">{3 - (u.recharge_count || 0)} al bonus</span>
+                      )}
+                    </div>
                   </div>
 
                   <div className="flex flex-col sm:flex-row gap-6 w-full sm:w-auto items-center">

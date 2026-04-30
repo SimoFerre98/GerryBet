@@ -32,15 +32,25 @@ export async function updateBalance(formData: FormData) {
 
   const { data: targetProfile } = await supabase
     .from('profiles')
-    .select('gerry_points')
+    .select('gerry_points, recharge_count')
     .eq('id', targetUserId)
     .single()
 
   if (!targetProfile) throw new Error('Utente non trovato')
 
   let newBalance = targetProfile.gerry_points
+  let newRechargeCount = targetProfile.recharge_count || 0
+  let bonusApplied = false
+
   if (type === 'add') {
     newBalance += amount
+    newRechargeCount += 1
+
+    // Bonus: dopo la 3a ricarica, aggiungi 50 GC
+    if (newRechargeCount === 3) {
+      newBalance += 50
+      bonusApplied = true
+    }
   } else {
     if (targetProfile.gerry_points < amount) {
       throw new Error('L\'utente non ha abbastanza GerryCoin da detrarre')
@@ -48,13 +58,28 @@ export async function updateBalance(formData: FormData) {
     newBalance -= amount
   }
 
+  const updateData: any = { gerry_points: newBalance }
+  if (type === 'add') {
+    updateData.recharge_count = newRechargeCount
+  }
+
   const { error: updateError } = await supabase
     .from('profiles')
-    .update({ gerry_points: newBalance })
+    .update(updateData)
     .eq('id', targetUserId)
 
   if (updateError) throw new Error('Errore durante l\'aggiornamento del saldo')
+
   revalidatePath('/admin/users')
+  revalidatePath('/admin')
+
+  if (bonusApplied) {
+    return { message: `🎁 Ricarica #${newRechargeCount} completata! Bonus di 50 GC sbloccato e accreditato!` }
+  }
+
+  if (type === 'add') {
+    return { message: `Ricarica #${newRechargeCount} completata! (${3 - newRechargeCount > 0 ? `${3 - newRechargeCount} al bonus` : 'Bonus già sbloccato'})` }
+  }
 }
 
 export async function updateUserRole(formData: FormData) {
