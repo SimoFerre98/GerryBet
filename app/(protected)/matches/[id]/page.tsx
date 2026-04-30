@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
-import { placeBet } from '@/app/actions/bets'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import BetForm from '../components/BetForm'
 
 export default async function MatchPage({
   params,
