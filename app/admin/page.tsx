@@ -123,6 +123,10 @@ export default async function AdminDashboardPage() {
     }
   })
 
+  // ── 10. Win Rate complessivo ──
+  const resolvedBets = wonBets.length + lostBets.length
+  const winRate = resolvedBets > 0 ? Math.round((wonBets.length / resolvedBets) * 100) : 0
+
   return (
     <div className="space-y-6 md:space-y-10">
       {/* Header */}
