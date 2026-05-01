@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { createMatch, addOdd, resolveMatch, deleteMatch, updateMatch, resolveMatchByScore } from '@/app/actions/admin_entities'
 import { ActionForm } from '@/app/admin/components/ActionForm'
+import MatchFormClient from './components/MatchFormClient'
 
 export default async function AdminMatchesPage() {
   const supabase = await createClient()
@@ -24,58 +25,7 @@ export default async function AdminMatchesPage() {
       </div>
 
       {/* Creazione Match */}
-      <div className="bg-slate-800/80 backdrop-blur-md rounded-2xl p-6 border border-slate-700 shadow-xl">
-        <h2 className="text-xl font-bold text-white mb-4">Nuova Partita</h2>
-        <ActionForm actionFunc={createMatch} successMessage="Partita creata con successo!" className="flex flex-col gap-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
-            <div className="w-full">
-              <label className="text-xs text-slate-400 mb-1 block">Squadra di Casa</label>
-              <select name="team_a_id" className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500" required>
-                <option value="">Seleziona...</option>
-                {teams?.map(t => <option key={t.id} value={t.id}>{t.name} (PR: {t.power_ranking})</option>)}
-              </select>
-            </div>
-            <div className="w-full">
-              <label className="text-xs text-slate-400 mb-1 block">Squadra in Trasferta</label>
-              <select name="team_b_id" className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500" required>
-                <option value="">Seleziona...</option>
-                {teams?.map(t => <option key={t.id} value={t.id}>{t.name} (PR: {t.power_ranking})</option>)}
-              </select>
-            </div>
-            <div className="w-full">
-              <label className="text-xs text-slate-400 mb-1 block">Data e Ora Inizio</label>
-              <input 
-                type="datetime-local" 
-                name="start_time" 
-                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500" 
-                required 
-              />
-            </div>
-          </div>
-
-          <div className="bg-slate-900/50 p-6 rounded-2xl border border-slate-700/50">
-            <h3 className="text-sm font-bold text-slate-300 mb-4 uppercase tracking-widest">Definisci Quote 1X2</h3>
-            <div className="grid grid-cols-3 gap-4">
-              <div>
-                <label className="text-[10px] text-slate-500 mb-1 block font-bold uppercase">Quota 1 (Casa)</label>
-                <input name="odd_1" type="number" step="0.01" placeholder="Es: 1.50" className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-indigo-500 outline-none" required />
-              </div>
-              <div>
-                <label className="text-[10px] text-slate-500 mb-1 block font-bold uppercase">Quota X (Pareggio)</label>
-                <input name="odd_x" type="number" step="0.01" placeholder="Es: 3.20" className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-indigo-500 outline-none" required />
-              </div>
-              <div>
-                <label className="text-[10px] text-slate-500 mb-1 block font-bold uppercase">Quota 2 (Trasferta)</label>
-                <input name="odd_2" type="number" step="0.01" placeholder="Es: 4.50" className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-indigo-500 outline-none" required />
-              </div>
-            </div>
-          </div>
-
-          <button type="submit" className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-black py-4 px-12 rounded-2xl transition-all shadow-lg shadow-indigo-500/20 uppercase tracking-widest text-sm hover:scale-[1.02] active:scale-95">
-            Crea Partita con Quote
-          </button>
-        </ActionForm>
-      </div>
+      <MatchFormClient teams={teams || []} />
 
       {/* Lista Partite Attive e Quote */}
       <h2 className="text-2xl font-bold text-white">Partite in Corso / Concluse</h2>

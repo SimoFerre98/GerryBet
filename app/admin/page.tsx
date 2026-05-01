@@ -93,16 +93,49 @@ export default async function AdminDashboardPage() {
     .sort((a, b) => b.volume - a.volume)
     .slice(0, 3)
 
-  // ── 8. Win Rate complessivo ──
-  const resolvedBets = wonBets.length + lostBets.length
-  const winRate = resolvedBets > 0 ? Math.round((wonBets.length / resolvedBets) * 100) : 0
+  // ── 9. Risk Management: Analisi Exposure per Match Aperti ──
+  const openMatchIds = matchesWithTeams?.filter(m => m.status === 'open').map(m => m.id) || []
+  const riskAnalysis = openMatchIds.map(mId => {
+    const match = matchesWithTeams?.find(m => m.id === mId)
+    const matchBets = allBets?.filter(b => b.match_id === mId) || []
+    const totalCollected = matchBets.reduce((acc, b) => acc + b.amount_gp, 0)
+    
+    const outcomes = ['1', 'X', '2']
+    const exposure = outcomes.map(out => {
+      const betsOnOutcome = matchBets.filter(b => (b.odds as any)?.description === out)
+      const payout = betsOnOutcome.reduce((acc, b) => {
+        const val = (b.odds as any)?.value || 0
+        return acc + Math.floor(b.amount_gp * val)
+      }, 0)
+      return {
+        label: out,
+        payout,
+        net: totalCollected - payout,
+        volume: betsOnOutcome.reduce((acc, b) => acc + b.amount_gp, 0)
+      }
+    })
+
+    return {
+      id: mId,
+      name: `${(match?.team_a as any)?.name} vs ${(match?.team_b as any)?.name}`,
+      totalCollected,
+      exposure
+    }
+  })
 
   return (
     <div className="space-y-6 md:space-y-10">
       {/* Header */}
-      <div>
-        <h1 className="text-2xl md:text-3xl font-bold text-white">Dashboard di Riepilogo</h1>
-        <p className="text-slate-400 text-sm md:text-base mt-1">Pannello di controllo del torneo GerryBet.</p>
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h1 className="text-2xl md:text-3xl font-bold text-white">Dashboard di Riepilogo</h1>
+          <p className="text-slate-400 text-sm md:text-base mt-1">Pannello di controllo del torneo GerryBet.</p>
+        </div>
+        <div className="flex gap-2">
+          <Link href="/admin/matches" className="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-4 py-2 rounded-xl transition-all">
+            Gestisci Match
+          </Link>
+        </div>
       </div>
 
       {/* ═══════════════════════════════════════════════════════════════
@@ -114,6 +147,58 @@ export default async function AdminDashboardPage() {
         <StatCard icon="✅" label="Match Conclusi" value={closedMatchesCount || 0} />
         <StatCard icon="🛡️" label="Squadre" value={teamsCount || 0} />
       </div>
+
+      {/* ═══════════════════════════════════════════════════════════════
+          SEZIONE 1.5: Risk Management (Liability Analysis)
+          ═══════════════════════════════════════════════════════════════ */}
+      {riskAnalysis.length > 0 && (
+        <div className="bg-slate-900/40 border border-slate-700/50 rounded-3xl p-6 shadow-2xl">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-xl font-bold text-white flex items-center gap-2">
+              <span className="animate-pulse">🔴</span> Analisi del Rischio (Liability)
+            </h2>
+            <span className="text-[10px] bg-slate-800 text-slate-400 px-3 py-1 rounded-full font-bold uppercase tracking-widest border border-slate-700">
+              Real-Time
+            </span>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {riskAnalysis.map(risk => (
+              <div key={risk.id} className="bg-slate-950/50 border border-slate-800 rounded-2xl overflow-hidden shadow-inner">
+                <div className="p-4 border-b border-slate-800 flex justify-between items-center bg-slate-900/30">
+                  <span className="text-sm font-black text-white truncate max-w-[200px]">{risk.name}</span>
+                  <span className="text-xs font-bold text-slate-400 bg-slate-800 px-2 py-1 rounded">
+                    Volume: {risk.totalCollected} GC
+                  </span>
+                </div>
+                <div className="p-4 space-y-4">
+                  <div className="grid grid-cols-3 gap-2">
+                    {risk.exposure.map(exp => {
+                      const isAtRisk = exp.net < 0;
+                      const pctOfTotal = risk.totalCollected > 0 ? (exp.volume / risk.totalCollected) * 100 : 0;
+                      
+                      return (
+                        <div key={exp.label} className={`p-3 rounded-xl border flex flex-col items-center ${isAtRisk ? 'bg-red-500/10 border-red-500/30' : 'bg-slate-900/50 border-slate-700/30'}`}>
+                          <span className="text-[10px] text-slate-500 font-black mb-1 uppercase">{exp.label}</span>
+                          <span className={`text-sm font-black ${isAtRisk ? 'text-red-400' : 'text-white'}`}>
+                            {exp.net > 0 ? '+' : ''}{exp.net}
+                          </span>
+                          <div className="w-full h-1 bg-slate-800 rounded-full mt-2 overflow-hidden">
+                            <div className={`h-full ${isAtRisk ? 'bg-red-500' : 'bg-indigo-500'}`} style={{ width: `${pctOfTotal}%` }}></div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <p className="text-[10px] text-slate-500 italic text-center">
+                    I valori indicano il guadagno/perdita netto del banco per ogni esito finale.
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* ═══════════════════════════════════════════════════════════════
           SEZIONE 2: Economia del Torneo
