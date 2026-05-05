@@ -102,6 +102,7 @@ export default function MatchFormClient({ teams }: { teams: Team[] }) {
                 timeIntervals={15}
                 timeCaption="Ora"
                 dateFormat="dd/MM/yyyy HH:mm"
+                popperPlacement="bottom-end"
                 customInput={<CustomDateInput className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500 transition-all text-left" />}
                 wrapperClassName="w-full"
                 required
