@@ -1,6 +1,8 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, forwardRef } from 'react'
+import DatePicker from 'react-datepicker'
+import "react-datepicker/dist/react-datepicker.css"
 import { createMatch } from '@/app/actions/admin_entities'
 import { ActionForm } from '@/app/admin/components/ActionForm'
 
@@ -15,6 +17,15 @@ export default function MatchFormClient({ teams }: { teams: Team[] }) {
   const [oddX, setOddX] = useState('')
   const [odd2, setOdd2] = useState('')
   const [overround, setOverround] = useState<number | null>(null)
+  const [startDate, setStartDate] = useState<Date | null>(null)
+
+  // Custom Input per il DatePicker per mantenere lo stile
+  const CustomDateInput = forwardRef<HTMLButtonElement, any>(({ value, onClick, className }, ref) => (
+    <button type="button" className={className} onClick={onClick} ref={ref}>
+      {value || "Seleziona data e ora"}
+    </button>
+  ))
+  CustomDateInput.displayName = "CustomDateInput"
 
   useEffect(() => {
     const q1 = parseFloat(odd1)
@@ -82,12 +93,22 @@ export default function MatchFormClient({ teams }: { teams: Team[] }) {
           </div>
           <div className="w-full">
             <label className="text-xs text-slate-400 mb-1 block font-medium">Data e Ora Inizio</label>
-            <input 
-              type="datetime-local" 
-              name="start_time" 
-              className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500 transition-all" 
-              required 
-            />
+            <div className="relative">
+              <DatePicker
+                selected={startDate}
+                onChange={(date) => setStartDate(date)}
+                showTimeSelect
+                timeFormat="HH:mm"
+                timeIntervals={15}
+                timeCaption="Ora"
+                dateFormat="dd/MM/yyyy HH:mm"
+                customInput={<CustomDateInput className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500 transition-all text-left" />}
+                wrapperClassName="w-full"
+                required
+              />
+            </div>
+            {/* Hidden input to pass the date to FormData in ActionForm */}
+            <input type="hidden" name="start_time" value={startDate ? startDate.toISOString() : ''} />
           </div>
         </div>
 
