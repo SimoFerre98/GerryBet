@@ -96,7 +96,7 @@ export default function MatchFormClient({ teams }: { teams: Team[] }) {
             <div className="relative">
               <DatePicker
                 selected={startDate}
-                onChange={(date) => setStartDate(date)}
+                onChange={(date: Date | null) => setStartDate(date)}
                 showTimeSelect
                 timeFormat="HH:mm"
                 timeIntervals={15}
