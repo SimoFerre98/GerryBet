@@ -117,7 +117,7 @@ export default async function ProfilePage() {
           <h2 className="text-xl font-bold text-white tracking-tight">Storico Saldo</h2>
         </div>
         
-        <TransactionHistory userId={user.id} />
+        {user?.id && <TransactionHistory userId={user.id} />}
       </section>
     </div>
   )

@@ -17,7 +17,7 @@ export async function placeBet(formData: FormData) {
   // 1. Verify match has not started
   const { data: match } = await supabase
     .from('matches')
-    .select('start_time, status')
+    .select('start_time, status, team_a_id, team_b_id')
     .eq('id', matchId)
     .single()
 
