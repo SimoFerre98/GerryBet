@@ -1,8 +1,6 @@
 'use client'
 
-import { useState, useEffect, forwardRef } from 'react'
-import DatePicker from 'react-datepicker'
-import "react-datepicker/dist/react-datepicker.css"
+import { useState, useEffect } from 'react'
 import { createMatch } from '@/app/actions/admin_entities'
 import { ActionForm } from '@/app/admin/components/ActionForm'
 
@@ -19,13 +17,6 @@ export default function MatchFormClient({ teams }: { teams: Team[] }) {
   const [overround, setOverround] = useState<number | null>(null)
   const [startDate, setStartDate] = useState<Date | null>(null)
 
-  // Custom Input per il DatePicker per mantenere lo stile
-  const CustomDateInput = forwardRef<HTMLButtonElement, any>(({ value, onClick, className }, ref) => (
-    <button type="button" className={className} onClick={onClick} ref={ref}>
-      {value || "Seleziona data e ora"}
-    </button>
-  ))
-  CustomDateInput.displayName = "CustomDateInput"
 
   useEffect(() => {
     const q1 = parseFloat(odd1)
@@ -44,8 +35,8 @@ export default function MatchFormClient({ teams }: { teams: Team[] }) {
     const q1 = parseFloat(baseOdd1)
     if (isNaN(q1) || q1 <= 1) return
 
-    // Puntiamo a una lavagna (overround) del 110% per sicurezza
-    const targetOverround = 1.10
+    // Puntiamo a una lavagna (overround) del 120% per sicurezza (come richiesto)
+    const targetOverround = 1.20
     const p1 = 1 / q1
     const pRem = targetOverround - p1
 
@@ -94,22 +85,15 @@ export default function MatchFormClient({ teams }: { teams: Team[] }) {
           <div className="w-full">
             <label className="text-xs text-slate-400 mb-1 block font-medium">Data e Ora Inizio</label>
             <div className="relative">
-              <DatePicker
-                selected={startDate}
-                onChange={(date: Date | null) => setStartDate(date)}
-                showTimeSelect
-                timeFormat="HH:mm"
-                timeIntervals={15}
-                timeCaption="Ora"
-                dateFormat="dd/MM/yyyy HH:mm"
-                popperPlacement="bottom-end"
-                customInput={<CustomDateInput className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500 transition-all text-left" />}
-                wrapperClassName="w-full"
+              <input
+                type="datetime-local"
+                name="start_time"
+                value={startDate ? new Date(startDate.getTime() - startDate.getTimezoneOffset() * 60000).toISOString().slice(0, 16) : ''}
+                onChange={(e) => setStartDate(e.target.value ? new Date(e.target.value) : null)}
+                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500 transition-all text-left [color-scheme:dark]"
                 required
               />
             </div>
-            {/* Hidden input to pass the date to FormData in ActionForm */}
-            <input type="hidden" name="start_time" value={startDate ? startDate.toISOString() : ''} />
           </div>
         </div>
 
@@ -185,7 +169,7 @@ export default function MatchFormClient({ teams }: { teams: Team[] }) {
           </div>
           
           <p className="text-[10px] text-slate-500 mt-4 leading-relaxed italic">
-            💡 <strong>Tip:</strong> Inserisci la quota per la favorita (1) e clicca "Magic" per calcolare automaticamente X e 2 con un margine di sicurezza del 10% per il banco.
+            💡 <strong>Tip:</strong> Inserisci la quota per la favorita (1) e clicca "Magic" per calcolare automaticamente X e 2 con un margine di sicurezza del 20% per il banco.
           </p>
         </div>
 

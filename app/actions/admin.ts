@@ -70,6 +70,14 @@ export async function updateBalance(formData: FormData) {
 
   if (updateError) throw new Error('Errore durante l\'aggiornamento del saldo')
 
+  // Log transaction
+  await supabase.from('transactions').insert({
+    user_id: targetUserId,
+    amount: type === 'add' ? amount + (bonusApplied ? 50 : 0) : -amount,
+    type: type === 'add' ? 'admin_recharge' : 'admin_deduct',
+    description: type === 'add' ? (bonusApplied ? `Ricarica Admin + Bonus 50 GC` : `Ricarica Admin`) : `Rimozione Admin`
+  })
+
   revalidatePath('/admin/users')
   revalidatePath('/admin')
 

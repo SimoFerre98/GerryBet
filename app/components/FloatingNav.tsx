@@ -45,6 +45,7 @@ export default function FloatingNav({ isAdmin }: { isAdmin: boolean }) {
     { name: 'Classifica', href: '/leaderboard', icon: '🏆' },
     { name: 'Scommesse', href: '/history', icon: '📜' },
     { name: 'Profilo', href: '/profile', icon: '👤' },
+    { name: 'Regole & Limiti', href: '/rules', icon: '📖' },
   ];
 
   let navItems = [...userNavItems];

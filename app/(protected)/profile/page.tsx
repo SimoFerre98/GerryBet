@@ -109,6 +109,48 @@ export default async function ProfilePage() {
           Attenzione: Assicurati di conservare con cura le tue nuove credenziali.
         </p>
       </div>
+
+      {/* Storico Transazioni */}
+      <section className="bg-slate-900/30 backdrop-blur-2xl rounded-[2.5rem] p-8 border border-white/10 shadow-2xl">
+        <div className="flex items-center gap-3 mb-6">
+          <span className="text-2xl">🧾</span>
+          <h2 className="text-xl font-bold text-white tracking-tight">Storico Saldo</h2>
+        </div>
+        
+        <TransactionHistory userId={user.id} />
+      </section>
+    </div>
+  )
+}
+
+async function TransactionHistory({ userId }: { userId: string }) {
+  const supabase = await createClient()
+  const { data: transactions } = await supabase
+    .from('transactions')
+    .select('*')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false })
+    .limit(20)
+
+  if (!transactions || transactions.length === 0) {
+    return <p className="text-slate-500 text-sm italic">Nessun movimento registrato.</p>
+  }
+
+  return (
+    <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+      {transactions.map(t => (
+        <div key={t.id} className="flex items-center justify-between p-4 rounded-2xl border border-white/5 bg-slate-950/50 hover:bg-slate-900/80 transition-colors">
+          <div>
+            <p className="text-white font-medium text-sm">{t.description}</p>
+            <p className="text-slate-500 text-[10px] uppercase tracking-widest mt-1">
+              {new Date(t.created_at).toLocaleString('it-IT', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
+            </p>
+          </div>
+          <div className={`font-black text-lg ${t.amount > 0 ? 'text-green-400' : 'text-red-400'}`}>
+            {t.amount > 0 ? '+' : ''}{t.amount} <span className="text-xs font-bold text-slate-500">GC</span>
+          </div>
+        </div>
+      ))}
     </div>
   )
 }

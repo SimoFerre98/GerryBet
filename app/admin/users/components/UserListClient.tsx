@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { updateUserRole, updateBalance } from '@/app/actions/admin'
 import { ActionForm } from '@/app/admin/components/ActionForm'
+import UserTransactionsModal from './UserTransactionsModal'
 
 type User = {
   id: string
@@ -15,6 +16,7 @@ type User = {
 
 export default function UserListClient({ initialUsers, currentUserId }: { initialUsers: User[], currentUserId: string }) {
   const [searchTerm, setSearchTerm] = useState('')
+  const [selectedUserForHistory, setSelectedUserForHistory] = useState<{id: string, username: string} | null>(null)
 
   const filteredUsers = initialUsers.filter((u) => 
     (u.username || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -61,9 +63,18 @@ export default function UserListClient({ initialUsers, currentUserId }: { initia
 
                 <div className="flex flex-col md:flex-row items-center gap-4 w-full xl:w-auto">
                   <div className="flex items-center gap-4">
-                    <div className="text-center md:text-right md:w-28 flex-shrink-0">
+                    <div className="text-center md:text-right md:w-28 flex-shrink-0 group relative">
                       <p className="text-xs text-slate-400 uppercase font-semibold">GC Attuali</p>
                       <p className="font-black text-2xl text-white">{u.gerry_points}</p>
+                      
+                      <button
+                        onClick={() => setSelectedUserForHistory({ id: u.id, username: u.username || 'Utente' })}
+                        className="absolute inset-0 flex flex-col items-center justify-center bg-indigo-900/80 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-sm cursor-pointer"
+                        title="Vedi Storico Saldo"
+                      >
+                        <span className="text-xl">🧾</span>
+                        <span className="text-[10px] font-bold text-indigo-200 mt-1 uppercase tracking-widest">Storico</span>
+                      </button>
                     </div>
                     {/* Recharge Progress */}
                     <div className="flex-shrink-0 text-center">
@@ -160,6 +171,14 @@ export default function UserListClient({ initialUsers, currentUserId }: { initia
           )}
         </ul>
       </div>
+
+      {selectedUserForHistory && (
+        <UserTransactionsModal 
+          userId={selectedUserForHistory.id} 
+          username={selectedUserForHistory.username} 
+          onClose={() => setSelectedUserForHistory(null)} 
+        />
+      )}
     </div>
   )
 }

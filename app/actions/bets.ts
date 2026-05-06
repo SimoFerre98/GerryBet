@@ -72,6 +72,17 @@ export async function placeBet(formData: FormData) {
 
   if (updateError) console.error('Failed to deduct GP', updateError)
 
+  // 6.5. Record Transaction
+  const { data: teamA } = await supabase.from('teams').select('name').eq('id', match.team_a_id).single()
+  const { data: teamB } = await supabase.from('teams').select('name').eq('id', match.team_b_id).single()
+  
+  await supabase.from('transactions').insert({
+    user_id: user.id,
+    amount: -amountGp,
+    type: 'bet_placed',
+    description: `Scommessa piazzata`
+  })
+
   // 7. ── DYNAMIC ODDS ADJUSTMENT (Auto-Balancing) ──
   // Fetch all current odds for this match
   const { data: currentOdds } = await supabase.from('odds').select('*').eq('match_id', matchId).eq('type', '1x2')

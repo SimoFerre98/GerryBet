@@ -1,8 +1,12 @@
 import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
+import SystemSettingsClient from './components/SystemSettingsClient'
 
 export default async function AdminDashboardPage() {
   const supabase = await createClient()
+
+  // ── 0. Settings ──
+  const { data: settings } = await supabase.from('system_settings').select('*')
 
   // ── 1. Basic Counts ──
   const { count: usersCount } = await supabase.from('profiles').select('*', { count: 'exact', head: true })
@@ -141,6 +145,8 @@ export default async function AdminDashboardPage() {
           </Link>
         </div>
       </div>
+
+      <SystemSettingsClient settings={settings || []} />
 
       {/* ═══════════════════════════════════════════════════════════════
           SEZIONE 1: Overview Cards

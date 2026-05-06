@@ -279,3 +279,23 @@ export async function resolveMatchByScore(formData: FormData) {
   revalidatePath('/dashboard')
   revalidatePath('/matches')
 }
+
+export async function updateSystemSetting(formData: FormData) {
+  const supabase = await createClient()
+  await assertAdmin(supabase)
+
+  const key = formData.get('key') as string
+  const value = parseFloat(formData.get('value') as string)
+
+  if (!key || isNaN(value)) throw new Error('Dati non validi')
+
+  const { error } = await supabase
+    .from('system_settings')
+    .update({ value })
+    .eq('key', key)
+
+  if (error) throw new Error('Errore aggiornamento impostazione: ' + error.message)
+
+  revalidatePath('/admin')
+  revalidatePath('/rules')
+}
