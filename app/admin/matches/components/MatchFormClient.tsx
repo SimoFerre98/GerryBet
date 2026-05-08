@@ -85,9 +85,10 @@ export default function MatchFormClient({ teams }: { teams: Team[] }) {
           <div className="w-full">
             <label className="text-xs text-slate-400 mb-1 block font-medium">Data e Ora Inizio</label>
             <div className="relative">
+              <input type="hidden" name="start_time_iso" value={startDate ? startDate.toISOString() : ''} />
               <input
                 type="datetime-local"
-                name="start_time"
+                name="start_time_local"
                 value={startDate ? new Date(startDate.getTime() - startDate.getTimezoneOffset() * 60000).toISOString().slice(0, 16) : ''}
                 onChange={(e) => setStartDate(e.target.value ? new Date(e.target.value) : null)}
                 className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500 transition-all text-left [color-scheme:dark]"

@@ -90,7 +90,8 @@ export async function createMatch(formData: FormData) {
 
   const team_a_id = formData.get('team_a_id') as string
   const team_b_id = formData.get('team_b_id') as string
-  const start_time_val = formData.get('start_time') as string
+  const start_time_iso = formData.get('start_time_iso') as string
+  const start_time_val = start_time_iso || (formData.get('start_time') as string)
   
   const odd1 = parseFloat(formData.get('odd_1') as string)
   const oddX = parseFloat(formData.get('odd_x') as string)
@@ -183,7 +184,8 @@ export async function updateMatch(formData: FormData) {
   await assertAdmin(supabase)
 
   const match_id = formData.get('match_id') as string
-  const start_time_val = formData.get('start_time') as string
+  const start_time_iso = formData.get('start_time_iso') as string
+  const start_time_val = start_time_iso || (formData.get('start_time') as string)
   
   if (!match_id || !start_time_val) throw new Error('Dati partita mancanti')
 

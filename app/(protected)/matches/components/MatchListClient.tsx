@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -16,11 +16,18 @@ type Match = {
 export default function MatchListClient({ initialMatches }: { initialMatches: Match[] }) {
   const [filter, setFilter] = useState<'all' | 'upcoming' | 'finished'>('all');
   const [search, setSearch] = useState('');
+  // Aggiornato ogni 30s per disabilitare le scommesse in tempo reale
+  const [now, setNow] = useState(() => new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => setNow(new Date()), 30_000);
+    return () => clearInterval(timer);
+  }, []);
 
   const filteredMatches = useMemo(() => {
     return initialMatches.filter((match) => {
       const matchDate = new Date(match.start_time);
-      const isPast = matchDate <= new Date() || match.status === 'closed';
+      const isPast = matchDate <= now || match.status === 'closed';
       
       // Filter by status
       if (filter === 'upcoming' && (isPast && match.status !== 'open')) return false;
@@ -34,13 +41,13 @@ export default function MatchListClient({ initialMatches }: { initialMatches: Ma
 
       return true;
     });
-  }, [initialMatches, filter, search]);
+  }, [initialMatches, filter, search, now]);
 
   const stats = useMemo(() => {
-    const upcoming = initialMatches.filter(m => m.status === 'open' && new Date(m.start_time) > new Date()).length;
-    const finished = initialMatches.filter(m => m.status === 'closed' || new Date(m.start_time) <= new Date()).length;
+    const upcoming = initialMatches.filter(m => m.status === 'open' && new Date(m.start_time) > now).length;
+    const finished = initialMatches.filter(m => m.status === 'closed' || new Date(m.start_time) <= now).length;
     return { upcoming, finished };
-  }, [initialMatches]);
+  }, [initialMatches, now]);
 
   return (
     <div className="space-y-8">
@@ -92,9 +99,16 @@ export default function MatchListClient({ initialMatches }: { initialMatches: Ma
         <AnimatePresence mode="popLayout">
           {filteredMatches.length > 0 ? (
             filteredMatches.map((match) => {
-              const hasStarted = new Date(match.start_time) <= new Date();
+              const hasStarted = new Date(match.start_time) <= now;
               const isClosed = match.status === 'closed';
+              const bettingClosed = hasStarted || isClosed;
               
+              // Usiamo un div non-cliccabile per le partite iniziate (evita navigazione)
+              const CardWrapper = bettingClosed ? 'div' : Link as any;
+              const cardProps = bettingClosed
+                ? {}
+                : { href: `/matches/${match.id}` };
+
               return (
                 <motion.div
                   layout
@@ -104,9 +118,9 @@ export default function MatchListClient({ initialMatches }: { initialMatches: Ma
                   exit={{ opacity: 0, scale: 0.95 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <Link 
-                    href={hasStarted ? '#' : `/matches/${match.id}`}
-                    className={`relative overflow-hidden bg-slate-900/30 backdrop-blur-2xl rounded-[2rem] p-4 md:p-8 shadow-[0_8px_32px_rgba(0,0,0,0.3)] border border-white/10 transition-all duration-300 flex flex-col md:flex-row items-center justify-between gap-5 md:gap-6 block group ${hasStarted ? 'opacity-70' : 'hover:bg-slate-800/40 hover:border-indigo-400/30 hover:shadow-[0_12px_40px_rgba(0,0,0,0.4)] hover:-translate-y-1'}`}
+                  <CardWrapper 
+                    {...cardProps}
+                    className={`relative overflow-hidden bg-slate-900/30 backdrop-blur-2xl rounded-[2rem] p-4 md:p-8 shadow-[0_8px_32px_rgba(0,0,0,0.3)] border border-white/10 transition-all duration-300 flex flex-col md:flex-row items-center justify-between gap-5 md:gap-6 block group ${bettingClosed ? 'opacity-70 cursor-default' : 'hover:bg-slate-800/40 hover:border-indigo-400/30 hover:shadow-[0_12px_40px_rgba(0,0,0,0.4)] hover:-translate-y-1 cursor-pointer'}`}
                   >
                     <div className="absolute inset-0 bg-gradient-to-r from-indigo-600/5 to-purple-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                     
@@ -147,7 +161,7 @@ export default function MatchListClient({ initialMatches }: { initialMatches: Ma
                     <div className={`w-full md:w-auto relative z-10 px-6 md:px-10 py-3 md:py-4 rounded-xl md:rounded-2xl font-bold uppercase tracking-wide text-xs md:text-sm text-center whitespace-nowrap transition-all duration-300 border border-white/20 ${hasStarted ? 'bg-slate-800/50 text-slate-400 shadow-none border-white/5' : 'bg-gradient-to-br from-indigo-500 to-purple-600 text-white group-hover:shadow-[0_0_30px_rgba(168,85,247,0.6)]'}`}>
                       {isClosed ? 'Risultato Finale' : hasStarted ? 'Match Iniziato' : 'Scommetti Ora'}
                     </div>
-                  </Link>
+                  </CardWrapper>
                 </motion.div>
               );
             })

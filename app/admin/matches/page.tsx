@@ -1,8 +1,9 @@
 import { createClient } from '@/lib/supabase/server'
-import { createMatch, addOdd, resolveMatch, deleteMatch, updateMatch, resolveMatchByScore } from '@/app/actions/admin_entities'
+import { createMatch, addOdd, resolveMatch, deleteMatch, resolveMatchByScore } from '@/app/actions/admin_entities'
 import { ActionForm } from '@/app/admin/components/ActionForm'
 import MatchFormClient from './components/MatchFormClient'
 import { BetsModal } from './components/BetsModal'
+import UpdateMatchForm from './components/UpdateMatchForm'
 
 export default async function AdminMatchesPage() {
   const supabase = await createClient()
@@ -48,19 +49,7 @@ export default async function AdminMatchesPage() {
                   Differenza Power Ranking: {Math.abs((match.team_a?.power_ranking || 0) - (match.team_b?.power_ranking || 0))}
                 </div>
                 {match.status === 'open' && (
-                  <ActionForm actionFunc={updateMatch} successMessage="Data e ora aggiornate" className="flex gap-2 items-center mt-3 bg-slate-900/50 p-2 rounded-xl inline-flex border border-white/5">
-                    <input type="hidden" name="match_id" value={match.id} />
-                    <input 
-                      type="datetime-local" 
-                      name="start_time" 
-                      defaultValue={new Date(match.start_time).toISOString().slice(0, 16)} 
-                      className="text-xs bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-indigo-500" 
-                      required 
-                    />
-                    <button type="submit" className="text-xs bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-4 py-2 rounded-lg transition-colors">
-                      Aggiorna
-                    </button>
-                  </ActionForm>
+                  <UpdateMatchForm matchId={match.id} initialStartTime={match.start_time} />
                 )}
               </div>
               <ActionForm actionFunc={deleteMatch} successMessage="Partita eliminata">
