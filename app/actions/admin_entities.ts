@@ -140,7 +140,12 @@ export async function deleteTeam(formData: FormData) {
   if (!team_id) throw new Error('Missing team_id')
 
   const { error } = await supabase.from('teams').delete().eq('id', team_id)
-  if (error) throw new Error('Failed to delete team: ' + error.message)
+  if (error) {
+    if (error.code === '23503') {
+      throw new Error('Impossibile eliminare la squadra: ci sono giocatori o partite associate. Rimuovi prima i dati collegati.')
+    }
+    throw new Error('Failed to delete team: ' + error.message)
+  }
   
   revalidatePath('/admin/teams')
 }
@@ -166,6 +171,7 @@ export async function deleteMatch(formData: FormData) {
   const match_id = formData.get('match_id') as string
   if (!match_id) throw new Error('Missing match_id')
 
+  // ON DELETE CASCADE handles bets and odds automatically
   const { error } = await supabase.from('matches').delete().eq('id', match_id)
   if (error) throw new Error('Failed to delete match: ' + error.message)
   

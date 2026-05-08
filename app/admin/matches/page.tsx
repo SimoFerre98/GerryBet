@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createMatch, addOdd, resolveMatch, deleteMatch, updateMatch, resolveMatchByScore } from '@/app/actions/admin_entities'
 import { ActionForm } from '@/app/admin/components/ActionForm'
 import MatchFormClient from './components/MatchFormClient'
+import { BetsModal } from './components/BetsModal'
 
 export default async function AdminMatchesPage() {
   const supabase = await createClient()
@@ -13,7 +14,8 @@ export default async function AdminMatchesPage() {
       *,
       team_a:teams!team_a_id(name, power_ranking),
       team_b:teams!team_b_id(name, power_ranking),
-      odds (*)
+      odds (*),
+      bets (*, profiles(username))
     `)
     .order('start_time', { ascending: false })
 
@@ -111,11 +113,19 @@ export default async function AdminMatchesPage() {
               )}
 
               {match.status === 'closed' && (
-                <div className="mt-auto pt-4 flex items-center justify-between">
+                <div className="mt-auto pt-4 flex items-center justify-between mb-4">
                   <span className="text-xs font-bold text-slate-500 uppercase">Risultato Finale</span>
                   <span className="text-2xl font-black text-indigo-400 drop-shadow-sm">{match.result}</span>
                 </div>
               )}
+
+              {/* Bets Modal Button */}
+              <div className="mt-4">
+                <BetsModal
+                  bets={match.bets || []}
+                  matchLabel={`${match.team_a?.name || 'Squadra A'} vs ${match.team_b?.name || 'Squadra B'}`}
+                />
+              </div>
             </div>
           </div>
         ))}

@@ -56,6 +56,7 @@ export default function FloatingNav({ isAdmin }: { isAdmin: boolean }) {
       { name: 'Utenti (GC)', href: '/admin/users', icon: '👥' },
       { name: 'Squadre', href: '/admin/teams', icon: '🛡️' },
       { name: 'Partite', href: '/admin/matches', icon: '🏟️' },
+      { name: 'Scommesse', href: '/admin/bets', icon: '💸' },
       { name: 'Torna all\'App', href: '/dashboard', icon: '🔙' },
     ];
   } else if (isAdmin) {

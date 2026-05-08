@@ -32,7 +32,7 @@ export default async function Home() {
             Inizia a Giocare
           </Link>
           <p className="text-sm text-slate-600 font-medium py-2 px-4 rounded-xl bg-indigo-50/50 inline-block border border-indigo-100/50">
-            🎁 Ricevi 100 GC gratuiti all'iscrizione!
+            🎁 Ricevi 50 GC dopo i tuoi primi 3 acquisti al bar!
           </p>
         </div>
       </div>
